@@ -21,10 +21,11 @@ jobs:
       - name: Build
         run: npm run build
       - name: Release
-        uses: "marvinpinto/action-automatic-releases@latest"
+        uses: actions/github-script@v6
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: false
-          files: |
-            dist/index.html
+          script: |
+            await require('./upload-release-asset.js')({
+              github,
+              context,
+              tag: ${{ github.ref_name }}
+            });
