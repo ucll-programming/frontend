@@ -24,7 +24,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            await require('./upload-release-asset.js')({
+            await require('./build-scripts/upload-release-asset.js')({
               github,
               context,
               tag: ${{ github.ref_name }}
