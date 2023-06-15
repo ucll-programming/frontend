@@ -16,16 +16,27 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20.3
-      - name: Clean install of dependencies
+      - name: Clean Install of Dependencies
         run: npm ci
       - name: Build
         run: npm run build
-      - name: Release
-        uses: actions/github-script@v6
+      - name: Create Release
+        run: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          script: |
-            await require('./build-scripts/upload-release-assets.js')({
-              github,
-              context,
-              tag: ${{ github.ref_name }}
-            });
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/index.html
+          asset_name: index.html
+          asset_content_type: text/html
