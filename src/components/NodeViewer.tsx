@@ -1,5 +1,5 @@
 import { useLoaderData } from "react-router-dom";
-import { MaterialNode, isExercise, isExplanation, isSection } from "./rest";
+import { MaterialNode, isExercise, isExplanation, isSection } from "../rest";
 
 
 function NodeViewer()
