@@ -1,18 +1,25 @@
-export interface Section {
-    type: 'section',
+export interface Node
+{
     path: string,
     name: string,
+}
+
+export interface Section extends Node
+{
+    type: 'section',
     tree_path: string[],
     children: string[],
 }
 
-export interface Explanation {
+export interface Explanation extends Node
+{
     type: 'explanation',
     path: string,
     tree_path: string[],
 }
 
-export interface Exercise {
+export interface Exercise extends Node
+{
     type: 'exercise',
     path: string,
     tree_path: string[],
