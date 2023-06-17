@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { LoaderFunctionArgs, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import App from './App';
-import NodeViewer from './components/NodeViewer';
+import NodeViewer from '@/components/NodeViewer';
 import { fetchNodeData } from './rest';
 
 
