@@ -1,6 +1,7 @@
 export interface Section {
     type: 'section',
     path: string,
+    name: string,
     tree_path: string[],
     children: string[],
 }
