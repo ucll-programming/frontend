@@ -11,16 +11,16 @@ function App()
         <nav>
           <ul>
             <li>
-              <Link to={`nodes/01-arithmetic/01-five`}>Five</Link>
+              <Link to={`nodes/01-arithmetic`}>Five</Link>
             </li>
             <li>
-              <Link to={`nodes/01-arithmetic/02-double`}>Double</Link>
+              <Link to={`nodes/01-arithmetic`}>Double</Link>
             </li>
             <li>
-              <Link to={`nodes/booleans`}>Booleans</Link>
+              <Link to={`nodes/02-booleans`}>Booleans</Link>
             </li>
             <li>
-              <Link to={`nodes/conditionals`}>Conditionals</Link>
+              <Link to={`nodes/03-conditionals`}>Conditionals</Link>
             </li>
           </ul>
         </nav>

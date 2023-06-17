@@ -1,16 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { LoaderFunctionArgs, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import App from './App';
 import NodeViewer from './NodeViewer';
+import { fetchNodeData } from './rest';
 
 
-
-async function nodeLoader({ params } : any) : Promise<any>
+async function nodeLoader({ params } : LoaderFunctionArgs) : Promise<Response>
 {
-  console.log(params);
-  return { test: 5 };
+  //const tree_path = params['*'];
+  const tree_path_string = params['*'];
+
+  if ( tree_path_string === undefined )
+  {
+    throw new Error("Bug detected: nodeLoader should receive path from router");
+  }
+
+  const tree_path = tree_path_string.split('/');
+
+  return await fetchNodeData(tree_path);
 }
 
 
