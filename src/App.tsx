@@ -1,28 +1,31 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import './App.css';
+import Overview from '@/components/Overview';
+import { useEffect, useState } from 'react';
+import { Section, fetchNodeData } from './rest';
 
 
 function App()
 {
+  const [rootSection, setRootSection] = useState<Section | undefined>(undefined);
+
+  useEffect(
+    () => {
+      (async () => {
+        const response = await fetchNodeData([]);
+        const data = await response.json();
+
+        setRootSection(data);
+      })();
+    }, []
+  );
+
   return (
     <>
       <div id="sidebar">
-        <h1>Title</h1>
+        <h1>Overview</h1>
         <nav>
-          <ul>
-            <li>
-              <Link to={`nodes/01-arithmetic`}>Five</Link>
-            </li>
-            <li>
-              <Link to={`nodes/01-arithmetic`}>Double</Link>
-            </li>
-            <li>
-              <Link to={`nodes/02-booleans`}>Booleans</Link>
-            </li>
-            <li>
-              <Link to={`nodes/03-conditionals`}>Conditionals</Link>
-            </li>
-          </ul>
+          {rootSection ? <Overview rootSection={rootSection} /> : <></>}
         </nav>
       </div>
       <div id="main-view">
