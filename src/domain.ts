@@ -1,4 +1,4 @@
-import { ExerciseData, ExplanationData, MaterialNode, SectionData, fetchNodeData } from "./rest";
+import { ExerciseData, ExplanationData, MaterialNode as NodeData, SectionData, fetchNodeData } from "./rest";
 
 
 export class TreePath
@@ -78,7 +78,7 @@ export abstract class Node
         return new TreePath(this.data.tree_path);
     }
 
-    protected abstract get data(): MaterialNode;
+    protected abstract get data(): NodeData;
 
     public abstract isSection(): this is Section;
 
@@ -196,13 +196,13 @@ export class Explanation extends Node
 export async function createNodeFromTreePath(tree_path: string[]): Promise<Node>
 {
     const response = await fetchNodeData(tree_path);
-    const data = await response.json() as MaterialNode;
+    const data = await response.json() as NodeData;
 
     return createNodeFromData(data);
 }
 
 
-export function createNodeFromData(data: MaterialNode): Node
+export function createNodeFromData(data: NodeData): Node
 {
     switch ( data.type )
     {

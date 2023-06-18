@@ -4,7 +4,6 @@ import { createContext, useEffect, useState } from 'react';
 import { Node, createNodeFromTreePath } from './domain';
 
 
-
 function App()
 {
   const [rootSection, setRootSection] = useState<Node | undefined>(undefined);
