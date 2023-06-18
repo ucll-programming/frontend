@@ -30,12 +30,16 @@
   margin: 2px 0px;
 }
 
+.overview-entry > .overview-entry-header {
+  margin: 0;
+}
+
 .overview-entry.section > .overview-entry-header {
   margin: 0;
   background: green;
 }
 
-.overview-entry.section > .overview-entry-header a {
+.overview-entry > .overview-entry-header a {
   text-decoration: none;
   color: black;
 }
@@ -51,17 +55,26 @@
 }
 
 .overview-entry.section.expanded > .section-children {
-  height: auto;
+  display: block;
 }
 
 .overview-entry.section.collapsed > .section-children {
-  height: 0;
+  display: none;
 }
 
 .overview-entry.explanations {
   background: #004;
 }
 
+.overview-entry.explanation.selected {
+  background: #008;
+}
+
+
 .overview-entry.exercise {
   background: #400;
+}
+
+.overview-entry.exercise.selected {
+  background: #800;
 }

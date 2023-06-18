@@ -69,22 +69,74 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
     }
 }
 
-function ExplanationViewer(props: { explanation: Explanation }) : JSX.Element
+function ExplanationViewer({ explanation }: { explanation: Explanation }) : JSX.Element
 {
+    const { selectedTreePath, setSelectedTreePath } = useOverviewContext();
+
     return (
-        <div className='overview-entry explanation'>
-            {props.explanation.name}
+        <div className={determineClassName()}>
+            <h1 className='overview-entry-header' onClick={select}>
+                <Link to={buildUrl(explanation.treePath)}>
+                    {explanation.name}
+                </Link>
+            </h1>
         </div>
     );
+
+
+    function determineClassName(): string
+    {
+        const isSelected = explanation.treePath.isEqualTo(selectedTreePath);
+
+        const result = ['overview-entry', 'explanation'];
+
+        if ( isSelected )
+        {
+            result.push('selected');
+        }
+
+        return result.join(' ');
+    }
+
+    function select()
+    {
+        setSelectedTreePath(explanation.treePath);
+    }
 }
 
-function ExerciseViewer(props: { exercise: Exercise }): JSX.Element
+function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
 {
+    const { selectedTreePath, setSelectedTreePath } = useOverviewContext();
+
     return (
-        <div className='overview-entry exercise'>
-            {props.exercise.name}
+        <div className={determineClassName()}>
+            <h1 className='overview-entry-header' onClick={select}>
+                <Link to={buildUrl(exercise.treePath)}>
+                    {exercise.name}
+                </Link>
+            </h1>
         </div>
     );
+
+
+    function determineClassName(): string
+    {
+        const isSelected = exercise.treePath.isEqualTo(selectedTreePath);
+
+        const result = ['overview-entry', 'exercise'];
+
+        if ( isSelected )
+        {
+            result.push('selected');
+        }
+
+        return result.join(' ');
+    }
+
+    function select()
+    {
+        setSelectedTreePath(exercise.treePath);
+    }
 }
 
 function ErrorViewer(props: { node: Node }): JSX.Element
