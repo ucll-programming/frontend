@@ -23,6 +23,7 @@ export interface ExerciseData extends NodeBase
     type: 'exercise',
     path: string,
     tree_path: string[],
+    markdown: string,
 }
 
 export type MaterialNode = SectionData | ExplanationData | ExerciseData;
@@ -46,8 +47,9 @@ export function isExercise(node: MaterialNode) : node is ExerciseData
 export async function fetchNodeData(tree_path: string[]) : Promise<Response>
 {
     const url = buildNodeUrl(tree_path);
+    const response = await fetch(url);
 
-    return await fetch(url);
+    return response;
 }
 
 export function buildNodeUrl(tree_path: string[]) : string

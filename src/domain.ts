@@ -156,6 +156,11 @@ export class Exercise extends Node
     {
         return false;
     }
+
+    public get markdown(): string
+    {
+        return this.data.markdown;
+    }
 }
 
 
