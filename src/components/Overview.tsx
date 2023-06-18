@@ -23,7 +23,7 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
 {
     const [ children, setChildren ] = useState<Node[]>([]);
     const { selectedTreePath, setSelectedTreePath } = useOverviewContext();
-    useEffect(() => section.addObserver(() => setChildren(section.children)), []);
+    useEffect(() => section.addObserver(() => setChildren(section.children)), [section]);
 
     return (
         <div className={determineClassName()}>
