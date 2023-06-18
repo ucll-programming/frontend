@@ -38,4 +38,13 @@
 
 .overview-entry.section .section-children {
   padding: 2px;
+  overflow: hidden;
+}
+
+.overview-entry.section.expanded .section-children {
+  height: auto;
+}
+
+.overview-entry.section.collapsed .section-children {
+  height: 0;
 }

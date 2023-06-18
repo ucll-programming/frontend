@@ -1,7 +1,6 @@
 import { Exercise, Explanation, Node, Section, TreePath } from '@/domain';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useCollapse } from 'react-collapsed';
 
 interface OverviewData
 {
@@ -25,13 +24,12 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
     const { selectedTreePath, setSelectedTreePath } = useOverviewContext();
     useEffect(() => section.addObserver(() => setChildren(section.children)), []);
     const isExpanded = section.treePath.isParentOf(selectedTreePath);
-    const { getCollapseProps } = useCollapse({isExpanded });
 
 
     return (
-        <div className='overview-entry section'>
+        <div className={['overview-entry', 'section', isExpanded ? 'expanded' : 'collapsed'].join(' ')}>
             <h1 className='overview-entry-header' onClick={select}>{section.name}</h1>
-            <div className='section-children' {...getCollapseProps()}>
+            <div className='section-children'>
                 {children.map(child => <NodeViewer key={child.name} node={child} />)}
             </div>
         </div>
