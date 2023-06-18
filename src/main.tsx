@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { LoaderFunctionArgs, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { LoaderFunctionArgs, RouterProvider, createBrowserRouter, useParams } from 'react-router-dom';
 import App from './App';
 import NodeViewer from '@/components/NodeViewer';
 import { fetchNodeData } from './rest';
+import { TreePath } from './domain';
 
 
 async function nodeLoader({ params } : LoaderFunctionArgs) : Promise<Response>
@@ -35,6 +36,23 @@ const router = createBrowserRouter([
     ],
   }
 ]);
+
+export function useActiveTreePath(): TreePath
+{
+  const params = useParams();
+  const path = params['*'];
+
+  if ( path !== undefined )
+  {
+    const parts = path.split('/');
+
+    return new TreePath(parts);
+  }
+  else
+  {
+    return new TreePath([]);
+  }
+}
 
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

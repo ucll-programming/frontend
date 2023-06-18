@@ -1,3 +1,4 @@
+import { createContext, useContext } from "react";
 import { ExerciseData, ExplanationData, MaterialNode as NodeData, SectionData, fetchNodeData } from "./rest";
 
 
@@ -40,6 +41,11 @@ export class TreePath
         {
             return this.parts.every((part, index) => part === treePath.parts[index]);
         }
+    }
+
+    public toString(): string
+    {
+        return this.parts.join('/');
     }
 }
 
@@ -202,6 +208,20 @@ export async function createNodeFromTreePath(tree_path: string[]): Promise<Node>
 }
 
 
+export function createDummyNode(): Node
+{
+    const data: SectionData = {
+        type: 'section',
+        tree_path: [],
+        children: [],
+        path: '',
+        name: 'DUMMY',
+    }
+
+    return createNodeFromData(data);
+}
+
+
 export function createNodeFromData(data: NodeData): Node
 {
     switch ( data.type )
@@ -213,4 +233,49 @@ export function createNodeFromData(data: NodeData): Node
         case "section":
             return new Section(data);
     }
+}
+
+
+export class Domain
+{
+    private lookupTable: { [key: string]: Node };
+
+    public constructor(public readonly root: Node)
+    {
+        this.lookupTable = Domain.buildTable(root);
+    }
+
+    private static buildTable(root: Node): { [key: string]: Node }
+    {
+        const result: { [key: string]: Node } = {};
+        recurse(root);
+        return result;
+
+        function recurse(node: Node)
+        {
+            result[node.treePath.toString()] = node;
+
+            if ( node.isSection() )
+            {
+                const section = node;
+
+                for ( const child of section.children )
+                {
+                    recurse(child);
+                }
+            }
+        }
+    }
+
+    public lookup(treePath: TreePath): Node
+    {
+        return this.lookupTable[treePath.toString()];
+    }
+}
+
+export const DomainContext = createContext<Domain>(new Domain(createDummyNode()));
+
+export function useDomain()
+{
+    return useContext(DomainContext);
 }

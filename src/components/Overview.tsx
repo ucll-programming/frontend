@@ -1,33 +1,20 @@
-import { Exercise, Explanation, Node, Section, TreePath } from '@/domain';
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { Exercise, Explanation, Node, Section, TreePath, useDomain } from '@/domain';
+import { useActiveTreePath } from '@/main';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 
-interface OverviewData
-{
-    selectedTreePath: TreePath,
-    setSelectedTreePath: (treePath: TreePath) => void;
-}
-
-const OverviewContext = createContext<OverviewData>({
-    selectedTreePath: new TreePath([]),
-    setSelectedTreePath: () => { console.log('Bug: this function should never be called')},
-});
-
-function useOverviewContext(): OverviewData
-{
-    return useContext(OverviewContext);
-}
 
 function SectionViewer({ section }: { section: Section }): JSX.Element
 {
     const [ children, setChildren ] = useState<Node[]>([]);
-    const { selectedTreePath, setSelectedTreePath } = useOverviewContext();
+    const activeTreePath = useActiveTreePath();
+
     useEffect(() => section.addObserver(() => setChildren(section.children)), [section]);
 
     return (
         <div className={determineClassName()}>
-            <h1 className='overview-entry-header' onClick={select}>
+            <h1 className='overview-entry-header'>
                 <Link to={buildUrl(section.treePath)}>
                     {section.name}
                 </Link>
@@ -41,8 +28,8 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
 
     function determineClassName(): string
     {
-        const isSelected = section.treePath.isEqualTo(selectedTreePath);
-        const isExpanded = section.treePath.isParentOf(selectedTreePath);
+        const isSelected = section.treePath.isEqualTo(activeTreePath);
+        const isExpanded = section.treePath.isParentOf(activeTreePath);
 
         const result = ['overview-entry', 'section'];
 
@@ -62,20 +49,15 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
 
         return result.join(' ');
     }
-
-    function select()
-    {
-        setSelectedTreePath(section.treePath);
-    }
 }
 
 function ExplanationViewer({ explanation }: { explanation: Explanation }) : JSX.Element
 {
-    const { selectedTreePath, setSelectedTreePath } = useOverviewContext();
+    const activeTreePath = useActiveTreePath();
 
     return (
         <div className={determineClassName()}>
-            <h1 className='overview-entry-header' onClick={select}>
+            <h1 className='overview-entry-header'>
                 <Link to={buildUrl(explanation.treePath)}>
                     {explanation.name}
                 </Link>
@@ -86,7 +68,7 @@ function ExplanationViewer({ explanation }: { explanation: Explanation }) : JSX.
 
     function determineClassName(): string
     {
-        const isSelected = explanation.treePath.isEqualTo(selectedTreePath);
+        const isSelected = explanation.treePath.isEqualTo(activeTreePath);
 
         const result = ['overview-entry', 'explanation'];
 
@@ -97,20 +79,15 @@ function ExplanationViewer({ explanation }: { explanation: Explanation }) : JSX.
 
         return result.join(' ');
     }
-
-    function select()
-    {
-        setSelectedTreePath(explanation.treePath);
-    }
 }
 
 function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
 {
-    const { selectedTreePath, setSelectedTreePath } = useOverviewContext();
+    const activeTreePath = useActiveTreePath();
 
     return (
         <div className={determineClassName()}>
-            <h1 className='overview-entry-header' onClick={select}>
+            <h1 className='overview-entry-header'>
                 <Link to={buildUrl(exercise.treePath)}>
                     {exercise.name}
                 </Link>
@@ -121,7 +98,7 @@ function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
 
     function determineClassName(): string
     {
-        const isSelected = exercise.treePath.isEqualTo(selectedTreePath);
+        const isSelected = exercise.treePath.isEqualTo(activeTreePath);
 
         const result = ['overview-entry', 'exercise'];
 
@@ -131,11 +108,6 @@ function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
         }
 
         return result.join(' ');
-    }
-
-    function select()
-    {
-        setSelectedTreePath(exercise.treePath);
     }
 }
 
@@ -171,7 +143,6 @@ function NodeViewer(props: { node: Node }): JSX.Element
 function Overview(props: { root: Node }): JSX.Element
 {
     const [topLevelNodes, setTopLevelNodes] = useState<Node[]>([]);
-    const [selectedTreePath, setSelectedTreePath] = useState<TreePath>(new TreePath([]));
 
     props.root.addObserver(() => {
         if (props.root.isSection())
@@ -186,13 +157,11 @@ function Overview(props: { root: Node }): JSX.Element
 
 
     return (
-        <OverviewContext.Provider value={{selectedTreePath, setSelectedTreePath}}>
-            <div className="overview-root-container">
-                {
-                    topLevelNodes.map(node => <NodeViewer key={node.name} node={node} />)
-                }
-            </div>
-        </OverviewContext.Provider>
+        <div className="overview-root-container">
+            {
+                topLevelNodes.map(node => <NodeViewer key={node.name} node={node} />)
+            }
+        </div>
     );
 }
 

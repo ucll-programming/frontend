@@ -1,34 +1,37 @@
 import { Outlet } from 'react-router-dom';
 import Overview from '@/components/Overview';
-import { createContext, useEffect, useState } from 'react';
-import { Node, createNodeFromTreePath } from './domain';
+import { useEffect, useState } from 'react';
+import { Domain, DomainContext, createDummyNode, createNodeFromTreePath } from './domain';
 
 
 function App()
 {
-  const [rootSection, setRootSection] = useState<Node | undefined>(undefined);
+  const [domain, setDomain] = useState<Domain>(new Domain(createDummyNode()));
 
   useEffect(
     () => {
       (async () => {
-        const node = await createNodeFromTreePath([]);
+        const root = await createNodeFromTreePath([]);
+        const domain = new Domain(root);
 
-        setRootSection(node);
+        setDomain(domain);
       })();
     }, []
   );
 
   return (
     <>
-      <div id="sidebar">
-        <h1>Overview</h1>
-        <nav>
-          {rootSection ? <Overview root={rootSection} /> : <></>}
-        </nav>
-      </div>
-      <div id="main-view">
-        <Outlet />
-      </div>
+      <DomainContext.Provider value={domain}>
+        <div id="sidebar">
+          <h1>Overview</h1>
+          <nav>
+            <Overview root={domain.root} />
+          </nav>
+        </div>
+        <div id="main-view">
+          <Outlet />
+        </div>
+      </DomainContext.Provider>
     </>
   );
 }
