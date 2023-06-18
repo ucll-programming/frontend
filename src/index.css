@@ -14,6 +14,11 @@
   -webkit-text-size-adjust: 100%;
 }
 
+#sidebar {
+  user-select: none;
+  cursor: pointer;
+}
+
 .overview-section-children-container {
   display: flex;
   flex-direction: column;
@@ -26,7 +31,7 @@
   margin: 2px 0px;
 }
 
-.overview-entry.section h1 {
+.overview-entry.section .overview-entry-header {
   margin: 0;
   background: green;
 }

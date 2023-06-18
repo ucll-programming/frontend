@@ -1,22 +1,47 @@
-import { Exercise, Explanation, Node, Section } from '@/domain';
-import { useEffect, useState } from 'react';
+import { Exercise, Explanation, Node, Section, TreePath } from '@/domain';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useCollapse } from 'react-collapsed';
 
+interface OverviewData
+{
+    selectedTreePath: TreePath,
+    setSelectedTreePath: (treePath: TreePath) => void;
+}
+
+const OverviewContext = createContext<OverviewData>({
+    selectedTreePath: new TreePath([]),
+    setSelectedTreePath: () => { console.log('Bug: this function should never be called')},
+});
+
+function useOverviewContext(): OverviewData
+{
+    return useContext(OverviewContext);
+}
 
 function SectionViewer({ section }: { section: Section }): JSX.Element
 {
     const [ children, setChildren ] = useState<Node[]>([]);
+    const { selectedTreePath, setSelectedTreePath } = useOverviewContext();
+    useEffect(() => section.addObserver(() => setChildren(section.children)), []);
+    const isExpanded = section.treePath.isParentOf(selectedTreePath);
+    const { getCollapseProps } = useCollapse({isExpanded });
 
-    section.addObserver(() => setChildren(section.children));
 
     return (
         <div className='overview-entry section'>
-            <h1>{section.name}</h1>
-            <div className='section-children'>
+            <h1 className='overview-entry-header' onClick={select}>{section.name}</h1>
+            <div className='section-children' {...getCollapseProps()}>
                 {children.map(child => <NodeViewer key={child.name} node={child} />)}
             </div>
         </div>
     );
+
+
+    function select()
+    {
+        setSelectedTreePath(section.treePath);
+    }
 }
 
 function ExplanationViewer(props: { explanation: Explanation }) : JSX.Element
@@ -69,6 +94,7 @@ function NodeViewer(props: { node: Node }): JSX.Element
 function Overview(props: { root: Node }): JSX.Element
 {
     const [topLevelNodes, setTopLevelNodes] = useState<Node[]>([]);
+    const [selectedTreePath, setSelectedTreePath] = useState<TreePath>(new TreePath([]));
 
     props.root.addObserver(() => {
         if (props.root.isSection())
@@ -83,11 +109,13 @@ function Overview(props: { root: Node }): JSX.Element
 
 
     return (
-        <div className="overview-root-container">
-            {
-                topLevelNodes.map(node => <NodeViewer key={node.name} node={node} />)
-            }
-        </div>
+        <OverviewContext.Provider value={{selectedTreePath, setSelectedTreePath}}>
+            <div className="overview-root-container">
+                {
+                    topLevelNodes.map(node => <NodeViewer key={node.name} node={node} />)
+                }
+            </div>
+        </OverviewContext.Provider>
     );
 }
 
