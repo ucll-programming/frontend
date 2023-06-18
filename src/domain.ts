@@ -133,6 +133,11 @@ export class Section extends Node
     {
         return true;
     }
+
+    public lookup(part: string): Node | undefined
+    {
+        return this.children.find(c => c.treePath.parts[c.treePath.parts.length-1] === part)
+    }
 }
 
 
@@ -214,7 +219,7 @@ export function createDummyNode(): Node
         type: 'section',
         tree_path: [],
         children: [],
-        path: '',
+        path: 'DUMMY PATH',
         name: 'DUMMY',
     }
 
@@ -267,9 +272,33 @@ export class Domain
         }
     }
 
-    public lookup(treePath: TreePath): Node
+    public lookup(treePath: TreePath): Node | undefined
     {
-        return this.lookupTable[treePath.toString()];
+        let current: Node = this.root;
+
+        for ( const part of treePath.parts )
+        {
+            if ( current.isSection() )
+            {
+                const section = current;
+                const child = section.lookup(part);
+
+                if ( child === undefined )
+                {
+                    return undefined;
+                }
+                else
+                {
+                    current = child;
+                }
+            }
+            else
+            {
+                return undefined;
+            }
+        }
+
+        return current;
     }
 }
 
