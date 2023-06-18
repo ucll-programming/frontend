@@ -2,20 +2,19 @@ import { Outlet } from 'react-router-dom';
 import './App.css';
 import Overview from '@/components/Overview';
 import { useEffect, useState } from 'react';
-import { Section, fetchNodeData } from './rest';
+import { Node, createNodeFromTreePath } from './domain';
 
 
 function App()
 {
-  const [rootSection, setRootSection] = useState<Section | undefined>(undefined);
+  const [rootSection, setRootSection] = useState<Node | undefined>(undefined);
 
   useEffect(
     () => {
       (async () => {
-        const response = await fetchNodeData([]);
-        const data = await response.json();
+        const node = await createNodeFromTreePath([]);
 
-        setRootSection(data);
+        setRootSection(node);
       })();
     }, []
   );
@@ -25,7 +24,7 @@ function App()
       <div id="sidebar">
         <h1>Overview</h1>
         <nav>
-          {rootSection ? <Overview rootSection={rootSection} /> : <></>}
+          {rootSection ? <Overview root={rootSection} /> : <></>}
         </nav>
       </div>
       <div id="main-view">

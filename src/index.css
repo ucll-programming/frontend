@@ -20,3 +20,17 @@
   justify-content: flex-start;
   align-items: stretch;
 }
+
+.overview-entry.section {
+  border-left: white 2px solid;
+  margin: 2px 0px;
+}
+
+.overview-entry.section h1 {
+  margin: 0;
+  background: green;
+}
+
+.overview-entry.section .section-children {
+  padding: 2px;
+}

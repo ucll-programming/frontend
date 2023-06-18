@@ -1,44 +1,44 @@
-export interface Node
+export interface NodeBase
 {
     path: string,
     name: string,
 }
 
-export interface Section extends Node
+export interface SectionData extends NodeBase
 {
     type: 'section',
     tree_path: string[],
     children: string[],
 }
 
-export interface Explanation extends Node
+export interface ExplanationData extends NodeBase
 {
     type: 'explanation',
     path: string,
     tree_path: string[],
 }
 
-export interface Exercise extends Node
+export interface ExerciseData extends NodeBase
 {
     type: 'exercise',
     path: string,
     tree_path: string[],
 }
 
-export type MaterialNode = Section | Explanation | Exercise;
+export type MaterialNode = SectionData | ExplanationData | ExerciseData;
 
 
-export function isSection(node: MaterialNode) : node is Section
+export function isSection(node: MaterialNode) : node is SectionData
 {
     return node.type == 'section';
 }
 
-export function isExplanation(node: MaterialNode) : node is Explanation
+export function isExplanation(node: MaterialNode) : node is ExplanationData
 {
     return node.type == 'explanation';
 }
 
-export function isExercise(node: MaterialNode) : node is Exercise
+export function isExercise(node: MaterialNode) : node is ExerciseData
 {
     return node.type == 'exercise';
 }
