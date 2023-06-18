@@ -1,5 +1,4 @@
 import { Outlet } from 'react-router-dom';
-import './App.css';
 import Overview from '@/components/Overview';
 import { useEffect, useState } from 'react';
 import { Node, createNodeFromTreePath } from './domain';
