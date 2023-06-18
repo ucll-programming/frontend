@@ -7,6 +7,7 @@
     "dev": "vite",
     "clean": "rimraf dist",
     "build": "tsc && vite build",
+    "builddev": "tsc && vite build --mode development --minify false",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
