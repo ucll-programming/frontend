@@ -7,22 +7,6 @@ import { fetchNodeData } from './rest';
 import { TreePath } from './domain';
 
 
-async function nodeLoader({ params } : LoaderFunctionArgs) : Promise<Response>
-{
-  //const tree_path = params['*'];
-  const tree_path_string = params['*'];
-
-  if ( tree_path_string === undefined )
-  {
-    throw new Error("Bug detected: nodeLoader should receive path from router");
-  }
-
-  const tree_path = tree_path_string.split('/');
-
-  return await fetchNodeData(tree_path);
-}
-
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -31,7 +15,6 @@ const router = createBrowserRouter([
       {
         path: "nodes/*",
         element: <NodeViewer />,
-        loader: nodeLoader,
       },
     ],
   }
