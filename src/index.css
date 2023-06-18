@@ -1,7 +1,6 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
-  font-weight: 400;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -31,20 +30,30 @@
   margin: 2px 0px;
 }
 
-.overview-entry.section .overview-entry-header {
+.overview-entry.section > .overview-entry-header {
   margin: 0;
   background: green;
 }
 
-.overview-entry.section .section-children {
+.overview-entry.section > .overview-entry-header a {
+  text-decoration: none;
+  color: black;
+}
+
+.overview-entry.section > .section-children {
   padding: 2px;
   overflow: hidden;
 }
 
-.overview-entry.section.expanded .section-children {
+.overview-entry.section.selected > .overview-entry-header {
+  background: #AAA;
+  color: black;
+}
+
+.overview-entry.section.expanded > .section-children {
   height: auto;
 }
 
-.overview-entry.section.collapsed .section-children {
+.overview-entry.section.collapsed > .section-children {
   height: 0;
 }

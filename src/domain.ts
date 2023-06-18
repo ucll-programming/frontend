@@ -29,6 +29,18 @@ export class TreePath
             return this.parts.every((part, index) => part === treePath.parts[index]);
         }
     }
+
+    public isEqualTo(treePath: TreePath): boolean
+    {
+        if ( this.length !== treePath.length )
+        {
+            return false;
+        }
+        else
+        {
+            return this.parts.every((part, index) => part === treePath.parts[index]);
+        }
+    }
 }
 
 

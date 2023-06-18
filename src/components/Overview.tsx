@@ -23,18 +23,44 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
     const [ children, setChildren ] = useState<Node[]>([]);
     const { selectedTreePath, setSelectedTreePath } = useOverviewContext();
     useEffect(() => section.addObserver(() => setChildren(section.children)), []);
-    const isExpanded = section.treePath.isParentOf(selectedTreePath);
-
 
     return (
-        <div className={['overview-entry', 'section', isExpanded ? 'expanded' : 'collapsed'].join(' ')}>
-            <h1 className='overview-entry-header' onClick={select}>{section.name}</h1>
+        <div className={determineClassName()}>
+            <h1 className='overview-entry-header' onClick={select}>
+                <Link to={buildUrl(section.treePath)}>
+                    {section.name}
+                </Link>
+            </h1>
             <div className='section-children'>
                 {children.map(child => <NodeViewer key={child.name} node={child} />)}
             </div>
         </div>
     );
 
+
+    function determineClassName(): string
+    {
+        const isSelected = section.treePath.isEqualTo(selectedTreePath);
+        const isExpanded = section.treePath.isParentOf(selectedTreePath);
+
+        const result = ['overview-entry', 'section'];
+
+        if ( isExpanded )
+        {
+            result.push('expanded');
+        }
+        else
+        {
+            result.push('collapsed');
+        }
+
+        if ( isSelected )
+        {
+            result.push('selected');
+        }
+
+        return result.join(' ');
+    }
 
     function select()
     {
@@ -45,7 +71,7 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
 function ExplanationViewer(props: { explanation: Explanation }) : JSX.Element
 {
     return (
-        <div>
+        <div className='overview-entry explanation'>
             {props.explanation.name}
         </div>
     );
@@ -54,7 +80,7 @@ function ExplanationViewer(props: { explanation: Explanation }) : JSX.Element
 function ExerciseViewer(props: { exercise: Exercise }): JSX.Element
 {
     return (
-        <div>
+        <div className='overview-entry exercise'>
             {props.exercise.name}
         </div>
     );
@@ -115,6 +141,13 @@ function Overview(props: { root: Node }): JSX.Element
             </div>
         </OverviewContext.Provider>
     );
+}
+
+function buildUrl(treePath: TreePath): string
+{
+    const partsUrl = treePath.parts.join('/')
+
+    return `/nodes/${partsUrl}`;
 }
 
 
