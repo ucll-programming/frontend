@@ -1,6 +1,37 @@
 import { ExerciseData, ExplanationData, MaterialNode, SectionData, fetchNodeData } from "./rest";
 
 
+export class TreePath
+{
+    public constructor(public readonly parts: string[])
+    {
+        // NOP
+    }
+
+    public add(part: string): TreePath
+    {
+        return new TreePath([...this.parts, part]);
+    }
+
+    public get length(): number
+    {
+        return this.parts.length;
+    }
+
+    public isParentOf(treePath: TreePath): boolean
+    {
+        if ( this.length > treePath.length )
+        {
+            return false;
+        }
+        else
+        {
+            return this.parts.every((part, index) => part === treePath.parts[index]);
+        }
+    }
+}
+
+
 export abstract class Node
 {
     private _observers: (() => void)[];
@@ -30,9 +61,9 @@ export abstract class Node
         return this.data.path;
     }
 
-    public get tree_path(): string[]
+    public get treePath(): TreePath
     {
-        return this.data.tree_path;
+        return new TreePath(this.data.tree_path);
     }
 
     protected abstract get data(): MaterialNode;
