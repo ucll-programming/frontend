@@ -16,7 +16,8 @@ function App()
 
         setDomain(domain);
       })();
-    }, []
+    },
+    []
   );
 
   return (
