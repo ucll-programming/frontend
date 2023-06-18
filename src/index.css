@@ -57,3 +57,11 @@
 .overview-entry.section.collapsed > .section-children {
   height: 0;
 }
+
+.overview-entry.explanations {
+  background: #004;
+}
+
+.overview-entry.exercise {
+  background: #400;
+}

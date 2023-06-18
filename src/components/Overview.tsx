@@ -2,6 +2,7 @@ import { Exercise, Explanation, Node, Section, TreePath } from '@/domain';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+
 interface OverviewData
 {
     selectedTreePath: TreePath,
