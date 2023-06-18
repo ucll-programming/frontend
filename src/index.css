@@ -27,11 +27,12 @@
 
 .overview-entry.section {
   border-left: white 2px solid;
-  margin: 2px 0px;
+  margin: 2px 0 0 2px;
 }
 
 .overview-entry > .overview-entry-header {
   margin: 0;
+  font-size: 1em;
 }
 
 .overview-entry.section > .overview-entry-header {
@@ -45,7 +46,6 @@
 }
 
 .overview-entry.section > .section-children {
-  padding: 2px;
   overflow: hidden;
 }
 
@@ -69,7 +69,6 @@
 .overview-entry.explanation.selected {
   background: #008;
 }
-
 
 .overview-entry.exercise {
   background: #400;
