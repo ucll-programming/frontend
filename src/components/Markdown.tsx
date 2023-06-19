@@ -1,6 +1,3 @@
-import { Fragment } from "react";
-import { useDomain } from "@/domain";
-import { useActiveTreePath } from "@/main";
 import remarkDirective from "remark-directive";
 import { visit } from "unist-util-visit";
 import { h } from "hastscript";
@@ -22,7 +19,7 @@ export function Markdown({ children } : { children: string }): JSX.Element
             <ReactMarkdown remarkPlugins={remarkPlugins} rehypePlugins={rehypePlugins}>
                 {children}
             </ReactMarkdown>
-            </>
+        </>
     );
 }
 
