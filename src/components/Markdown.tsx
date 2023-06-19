@@ -33,7 +33,7 @@ const admonitionRemarkPlugin: Plugin = () => {
         'VIDEO',
         'HINT',
         'QUESTION',
-    ]
+    ];
 
     return (tree) => {
         visit(tree, 'containerDirective', (node: ContainerDirective) => {
