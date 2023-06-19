@@ -1,33 +1,15 @@
 import { Fragment } from "react";
-import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { useDomain } from "@/domain";
 import { useActiveTreePath } from "@/main";
 import remarkDirective from "remark-directive";
 import { visit } from "unist-util-visit";
 import { h } from "hastscript";
-import type { Plugin } from 'unified';
+import type { Node } from 'unist';
 import type { ContainerDirective } from 'mdast-util-directive';
-import type { Element, Text } from 'hast';
-import infoIcon from '@/svg/info.svg';
-
-
-// const notePlugin: Plugin = () => {
-//     return (tree) => {
-//         visit(tree, 'containerDirective', (node: ContainerDirective) => {
-//             if (node.name === 'WARNING')
-//             {
-//                 const data = node.data || (node.data = {});
-//                 const tagName = 'div';
-
-//                 console.log(node);
-
-//                 data.hName = tagName;
-//                 data.hProperties = {className: 'warning'};
-
-//             }
-//         });
-//     };
-// };
+import type { Element } from 'hast';
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import { createInformationIcon } from "@/markdown/icons";
+import { Plugin } from 'unified';
 
 
 const warningPlugin: Plugin = () => {
@@ -39,7 +21,7 @@ const warningPlugin: Plugin = () => {
                 const tagName = 'div';
 
                 data.hName = tagName;
-                data.hProperties = {className: 'admonition warning'};
+                data.hProperties = {className: ['admonition', 'warning']};
             }
         });
     };
@@ -48,18 +30,54 @@ const warningPlugin: Plugin = () => {
 
 const warningRehypePlugin: Plugin = () => {
     return (tree) => {
-        visit(tree, { tagName: 'div' }, (node: Element) => {
-            const children = node.children;
+        visit(tree, isAdmonition, (node: Node) => {
+            const element = node as Element;
+            const children = element.children;
 
-            node.children = [
-                h('span', { className: 'admonition-header'}, [
-                    h('img', { src: infoIcon }),
-                    h('h1', [ 'Warning' ]),
+            element.children = [
+                h('div', { className: 'admonition-header'}, [
+                    h('h1', [ createInformationIcon(), 'Warning' ]),
                 ]),
                 ...children
             ]
         });
     };
+
+
+    function isAdmonition(node: Node): boolean
+    {
+        if ( node.type !== 'element' )
+        {
+            return false;
+        }
+
+        const element = node as Element;
+
+        if ( element.tagName !== 'div' )
+        {
+            return false;
+        }
+
+        if ( !element.properties || !('className' in element.properties) )
+        {
+            return false;
+        }
+
+        const className = element.properties.className;
+
+        if ( Array.isArray(className) )
+        {
+            return className.includes("admonition");
+        }
+        else if ( typeof className === 'string' )
+        {
+            return className.includes("admonition");
+        }
+        else
+        {
+            return false;
+        }
+    }
 };
 
 
@@ -89,9 +107,12 @@ function NodeViewer()
     }
     else if ( node.isExercise() )
     {
+        const remarkPlugins = [ remarkDirective, warningPlugin ];
+        const rehypePlugins = [ warningRehypePlugin ];
+
         return (
             <Fragment key={node.path}>
-                <ReactMarkdown remarkPlugins={[remarkDirective, warningPlugin]} rehypePlugins={[]}>
+                <ReactMarkdown remarkPlugins={remarkPlugins} rehypePlugins={rehypePlugins}>
                     {node.markdown}
                 </ReactMarkdown>
             </Fragment>
