@@ -201,6 +201,11 @@ export class Explanation extends Node
     {
         return false;
     }
+
+    public get markdown(): string
+    {
+        return this.data.markdown;
+    }
 }
 
 

@@ -16,6 +16,7 @@ export interface ExplanationData extends NodeBase
     type: 'explanation',
     path: string,
     tree_path: string[],
+    markdown: string,
 }
 
 export interface ExerciseData extends NodeBase

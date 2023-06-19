@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { useDomain } from "@/domain";
 import { useActiveTreePath } from "@/main";
 import ExerciseViewer from "./ExerciseViewer";
+import ExplanationViewer from "./ExplanationViewer";
 
 
 function NodeViewer()
@@ -39,7 +40,7 @@ function NodeViewer()
     {
         return (
             <Fragment key={node.path}>
-                <p>Explanation {node.path}</p>
+                <ExplanationViewer explanation={node} />
             </Fragment>
         );
     }
