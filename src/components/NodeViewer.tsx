@@ -1,8 +1,5 @@
-import { useLoaderData, useParams } from "react-router-dom";
-import { MaterialNode, isExercise, isExplanation, isSection } from "../rest";
 import { Fragment } from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import admonitions from 'remark-admonitions';
 import { useDomain } from "@/domain";
 import { useActiveTreePath } from "@/main";
 
