@@ -2,6 +2,66 @@ import { Fragment } from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { useDomain } from "@/domain";
 import { useActiveTreePath } from "@/main";
+import remarkDirective from "remark-directive";
+import { visit } from "unist-util-visit";
+import { h } from "hastscript";
+import type { Plugin } from 'unified';
+import type { ContainerDirective } from 'mdast-util-directive';
+import type { Element, Text } from 'hast';
+import infoIcon from '@/svg/info.svg';
+
+
+// const notePlugin: Plugin = () => {
+//     return (tree) => {
+//         visit(tree, 'containerDirective', (node: ContainerDirective) => {
+//             if (node.name === 'WARNING')
+//             {
+//                 const data = node.data || (node.data = {});
+//                 const tagName = 'div';
+
+//                 console.log(node);
+
+//                 data.hName = tagName;
+//                 data.hProperties = {className: 'warning'};
+
+//             }
+//         });
+//     };
+// };
+
+
+const warningPlugin: Plugin = () => {
+    return (tree) => {
+        visit(tree, 'containerDirective', (node: ContainerDirective) => {
+            if (node.name === 'WARNING')
+            {
+                const data = node.data || (node.data = {});
+                const tagName = 'div';
+
+                data.hName = tagName;
+                data.hProperties = {className: 'admonition warning'};
+            }
+        });
+    };
+};
+
+
+const warningRehypePlugin: Plugin = () => {
+    return (tree) => {
+        visit(tree, { tagName: 'div' }, (node: Element) => {
+            const children = node.children;
+
+            node.children = [
+                h('span', { className: 'admonition-header'}, [
+                    h('img', { src: infoIcon }),
+                    h('h1', [ 'Warning' ]),
+                ]),
+                ...children
+            ]
+        });
+    };
+};
+
 
 
 function NodeViewer()
@@ -31,7 +91,7 @@ function NodeViewer()
     {
         return (
             <Fragment key={node.path}>
-                <ReactMarkdown remarkPlugins={[]}>
+                <ReactMarkdown remarkPlugins={[remarkDirective, warningPlugin]} rehypePlugins={[]}>
                     {node.markdown}
                 </ReactMarkdown>
             </Fragment>
