@@ -52,21 +52,9 @@ export class TreePath
 
 export abstract class Node
 {
-    private _observers: (() => void)[];
-
     public constructor()
     {
-        this._observers = [];
-    }
-
-    public addObserver(observer: () => void): void
-    {
-        this._observers.push(observer);
-    }
-
-    protected notifyObservers(): void
-    {
-        this._observers.forEach(observer => observer());
+        // NOP
     }
 
     public get name(): string
@@ -96,7 +84,9 @@ export abstract class Node
 
 export class Section extends Node
 {
-    public children: Node[];
+    private children: Node[] | undefined;
+
+    private resolvers: ((children: Node[]) => void)[];
 
     public constructor(protected data: SectionData)
     {
@@ -107,16 +97,30 @@ export class Section extends Node
             throw new Error('data should have type section')
         }
 
-        this.children = [];
+        this.children = undefined;
+        this.resolvers = [];
         this.fetchData();
+    }
+
+    public async getChildren(): Promise<Node[]>
+    {
+        if ( this.children === undefined )
+        {
+            return new Promise(resolve => this.resolvers.push(resolve));
+        }
+        else
+        {
+            return this.children;
+        }
     }
 
     private async fetchData(): Promise<void>
     {
         const promises = this.data.children.map(child => createNodeFromTreePath([...this.data.tree_path, child]));
-        this.children = await Promise.all(promises);
+        const children = await Promise.all(promises);
 
-        this.notifyObservers();
+        this.children = children;
+        this.resolvers.forEach(resolver => resolver(children));
     }
 
     public isExercise(): this is Exercise
@@ -134,9 +138,11 @@ export class Section extends Node
         return true;
     }
 
-    public lookup(part: string): Node | undefined
+    public async lookup(part: string): Promise<Node | undefined>
     {
-        return this.children.find(c => c.treePath.parts[c.treePath.parts.length-1] === part)
+        const children = await this.getChildren();
+
+        return children.find(c => c.treePath.parts[c.treePath.parts.length-1] === part);
     }
 }
 
@@ -248,36 +254,36 @@ export function createNodeFromData(data: NodeData): Node
 
 export class Domain
 {
-    private lookupTable: { [key: string]: Node };
+    // private lookupTable: { [key: string]: Node };
 
     public constructor(public readonly root: Node)
     {
-        this.lookupTable = Domain.buildTable(root);
+        // this.lookupTable = Domain.buildTable(root);
     }
 
-    private static buildTable(root: Node): { [key: string]: Node }
-    {
-        const result: { [key: string]: Node } = {};
-        recurse(root);
-        return result;
+    // private static buildTable(root: Node): { [key: string]: Node }
+    // {
+    //     const result: { [key: string]: Node } = {};
+    //     recurse(root);
+    //     return result;
 
-        function recurse(node: Node)
-        {
-            result[node.treePath.toString()] = node;
+    //     function recurse(node: Node)
+    //     {
+    //         result[node.treePath.toString()] = node;
 
-            if ( node.isSection() )
-            {
-                const section = node;
+    //         if ( node.isSection() )
+    //         {
+    //             const section = node;
 
-                for ( const child of section.children )
-                {
-                    recurse(child);
-                }
-            }
-        }
-    }
+    //             for ( const child of section.children )
+    //             {
+    //                 recurse(child);
+    //             }
+    //         }
+    //     }
+    // }
 
-    public lookup(treePath: TreePath): Node | undefined
+    public async lookup(treePath: TreePath): Promise<Node | undefined>
     {
         let current: Node = this.root;
 
@@ -286,7 +292,7 @@ export class Domain
             if ( current.isSection() )
             {
                 const section = current;
-                const child = section.lookup(part);
+                const child = await section.lookup(part);
 
                 if ( child === undefined )
                 {

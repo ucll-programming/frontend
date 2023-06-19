@@ -1,5 +1,5 @@
-import { Fragment } from "react";
-import { useDomain } from "@/domain";
+import { Fragment, useEffect, useState } from "react";
+import { useDomain, Node } from "@/domain";
 import { useActiveTreePath } from "@/main";
 import ExerciseViewer from "./ExerciseViewer";
 import ExplanationViewer from "./ExplanationViewer";
@@ -7,9 +7,19 @@ import ExplanationViewer from "./ExplanationViewer";
 
 function NodeViewer()
 {
+    const [node, setNode] = useState<Node | undefined>(undefined);
     const path = useActiveTreePath();
     const domain = useDomain();
-    const node = domain.lookup(path);
+
+    useEffect(() => {
+        const func = async () => {
+            const node = await domain.lookup(path);
+
+            setNode(node);
+        };
+
+        func();
+    }, [path, domain]);
 
     if ( node === undefined )
     {

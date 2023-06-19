@@ -24,7 +24,6 @@ function App()
     <>
       <DomainContext.Provider value={domain}>
         <div id="sidebar">
-          <h1>Overview</h1>
           <nav>
             <Overview root={domain.root} />
           </nav>

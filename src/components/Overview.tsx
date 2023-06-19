@@ -10,7 +10,15 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
     const [ children, setChildren ] = useState<Node[]>([]);
     const activeTreePath = useActiveTreePath();
 
-    useEffect(() => section.addObserver(() => setChildren(section.children)), [section]);
+    useEffect(() => {
+        const func = async () => {
+            const children = await section.getChildren();
+
+            setChildren(children);
+        };
+
+        func();
+    }, [section]);
 
     return (
         <div className={determineClassName()}>
@@ -140,20 +148,25 @@ function NodeViewer(props: { node: Node }): JSX.Element
     }
 }
 
-function Overview(props: { root: Node }): JSX.Element
+function Overview({ root }: { root: Node }): JSX.Element
 {
     const [topLevelNodes, setTopLevelNodes] = useState<Node[]>([]);
 
-    props.root.addObserver(() => {
-        if (props.root.isSection())
-        {
-            setTopLevelNodes(props.root.children)
-        }
-        else
-        {
-            setTopLevelNodes([props.root]);
-        }
-    });
+    useEffect(() => {
+        const func = async () => {
+            if ( root.isSection() )
+            {
+                const children = await root.getChildren();
+                setTopLevelNodes(children);
+            }
+            else
+            {
+                setTopLevelNodes([root]);
+            }
+        };
+
+        func();
+    }, [ root ]);
 
 
     return (
