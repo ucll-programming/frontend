@@ -1,7 +1,6 @@
 import { Fragment } from "react";
 import { useDomain } from "@/domain";
 import { useActiveTreePath } from "@/main";
-import { Markdown } from "@/components/Markdown";
 import ExerciseViewer from "./ExerciseViewer";
 
 

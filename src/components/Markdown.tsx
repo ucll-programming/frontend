@@ -1,4 +1,3 @@
-import remarkDirective from "remark-directive";
 import { visit } from "unist-util-visit";
 import { h } from "hastscript";
 import type { Node } from 'unist';
@@ -8,12 +7,14 @@ import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { createHintIcon, createInformationIcon, createQuestionIcon, createTaskIcon, createVideoIcon, createWarningIcon } from "@/markdown/icons";
 import { Plugin } from 'unified';
 import { capitalize, isString } from "@/util";
+import remarkDirective from "remark-directive";
+import rehypeHighlight from "rehype-highlight";
 
 
 export function Markdown({ children } : { children: string }): JSX.Element
 {
     const remarkPlugins = [ remarkDirective, admonitionRemarkPlugin ];
-    const rehypePlugins = [ AdmonitionRehypePlugin ];
+    const rehypePlugins = [ admonitionRehypePlugin, rehypeHighlight ];
 
     return (
         <>
@@ -50,7 +51,7 @@ const admonitionRemarkPlugin: Plugin = () => {
 };
 
 
-const AdmonitionRehypePlugin: Plugin = () => {
+const admonitionRehypePlugin: Plugin = () => {
     return (tree) => {
         visit(tree, isAdmonition, (node: Node) => {
             const element = node as Element;
