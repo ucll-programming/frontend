@@ -29,8 +29,10 @@ function App()
             <Overview root={domain.root} />
           </nav>
         </div>
-        <div id="main-view">
-          <Outlet />
+        <div id="main-view-container">
+          <div id="main-view">
+            <Outlet />
+          </div>
         </div>
       </DomainContext.Provider>
     </>

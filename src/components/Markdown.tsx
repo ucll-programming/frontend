@@ -5,14 +5,15 @@ import type { Node } from 'unist';
 import type { ContainerDirective } from 'mdast-util-directive';
 import type { Element } from 'hast';
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import { createInformationIcon } from "@/markdown/icons";
+import { createHintIcon, createInformationIcon, createQuestionIcon, createTaskIcon, createVideoIcon, createWarningIcon } from "@/markdown/icons";
 import { Plugin } from 'unified';
+import { capitalize, isString } from "@/util";
 
 
 export function Markdown({ children } : { children: string }): JSX.Element
 {
-    const remarkPlugins = [ remarkDirective, warningPlugin ];
-    const rehypePlugins = [ warningRehypePlugin ];
+    const remarkPlugins = [ remarkDirective, admonitionRemarkPlugin ];
+    const rehypePlugins = [ AdmonitionRehypePlugin ];
 
     return (
         <>
@@ -24,36 +25,74 @@ export function Markdown({ children } : { children: string }): JSX.Element
 }
 
 
-const warningPlugin: Plugin = () => {
+const admonitionRemarkPlugin: Plugin = () => {
+    const categories = [
+        'WARNING',
+        'INFO',
+        'TASK',
+        'VIDEO',
+        'HINT',
+        'QUESTION',
+    ]
+
     return (tree) => {
         visit(tree, 'containerDirective', (node: ContainerDirective) => {
-            if (node.name === 'WARNING')
+            if (categories.includes(node.name))
             {
                 const data = node.data || (node.data = {});
                 const tagName = 'div';
 
                 data.hName = tagName;
-                data.hProperties = {className: ['admonition', 'warning']};
+                data.hProperties = {className: ['admonition', node.name.toLowerCase()]};
             }
         });
     };
 };
 
 
-const warningRehypePlugin: Plugin = () => {
+const AdmonitionRehypePlugin: Plugin = () => {
     return (tree) => {
         visit(tree, isAdmonition, (node: Node) => {
             const element = node as Element;
             const children = element.children;
+            const properties = element.properties || {};
+            const classNames = getClassNames(properties.className as string | string[]);
+            const category = classNames.filter(cn => cn !== 'admonition')[0];
+            const symbol = getCategorySymbol(category);
 
             element.children = [
                 h('div', { className: 'admonition-header'}, [
-                    h('h1', [ createInformationIcon(), 'Warning' ]),
+                    h('h1', [
+                        h('span', { className: 'admonition-symbol' }, [ symbol ]),
+                        h('span', { className: 'admonition-caption' }, [ capitalize(category) ]),
+                    ]),
                 ]),
-                ...children
+                ...children,
             ]
         });
     };
+
+
+    function getCategorySymbol(category: string): Element
+    {
+        switch ( category )
+        {
+            case 'warning':
+                return createWarningIcon();
+            case 'info':
+                return createInformationIcon();
+            case 'task':
+                return createTaskIcon();
+            case 'video':
+                return createVideoIcon();
+            case 'hint':
+                return createHintIcon();
+            case 'question':
+                return createQuestionIcon();
+            default:
+                return h('BUG');
+        }
+    }
 
 
     function isAdmonition(node: Node): boolean
@@ -81,13 +120,25 @@ const warningRehypePlugin: Plugin = () => {
         {
             return className.includes("admonition");
         }
-        else if ( typeof className === 'string' )
+        else if ( isString(className) )
         {
             return className.includes("admonition");
         }
         else
         {
             return false;
+        }
+    }
+
+    function getClassNames(className: string | string[]) : string[]
+    {
+        if ( Array.isArray(className) )
+        {
+            return className;
+        }
+        else
+        {
+            return className.split(' ');
         }
     }
 };
