@@ -121,6 +121,7 @@ export class Section extends Node
 
         this.children = children;
         this.resolvers.forEach(resolver => resolver(children));
+        this.resolvers = [];
     }
 
     public isExercise(): this is Exercise
