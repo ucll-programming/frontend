@@ -2,6 +2,7 @@ import { Exercise, Explanation, Node, Section, TreePath } from '@/domain';
 import { useActiveTreePath } from '@/main';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import * as icons from '@primer/octicons-react';
 
 
 
@@ -68,11 +69,41 @@ function LeafViewer({ node } : { node: Node }): JSX.Element
         <div className={determineClassName()}>
             <h1 className='overview-entry-header'>
                 <Link to={buildUrl(node.treePath)}>
-                    {node.name}
+                    <span className='overview-entry-header-label'>
+                        {node.name}
+                    </span>
+                    <span className='overview-entry-header-symbol'>
+                        {determineSymbol()}
+                    </span>
                 </Link>
             </h1>
         </div>
     );
+
+
+    function determineSymbol() : JSX.Element
+    {
+        if ( node.isExercise() )
+        {
+            return (
+                <icons.PencilIcon />
+            );
+        }
+        else if ( node.isExplanation() )
+        {
+            return (
+                <icons.BookIcon />
+            )
+        }
+        else
+        {
+            console.error("Unexpected node type", node);
+
+            return (
+                <icons.XCircleFillIcon />
+            );
+        }
+    }
 
 
     function determineClassName(): string
