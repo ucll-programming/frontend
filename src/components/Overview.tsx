@@ -1,4 +1,4 @@
-import { Exercise, Explanation, Node, Section, TreePath, useDomain } from '@/domain';
+import { Exercise, Explanation, Node, Section, TreePath } from '@/domain';
 import { useActiveTreePath } from '@/main';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -59,15 +59,16 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
     }
 }
 
-function ExplanationViewer({ explanation }: { explanation: Explanation }) : JSX.Element
+
+function LeafViewer({ node } : { node: Node }): JSX.Element
 {
     const activeTreePath = useActiveTreePath();
 
     return (
         <div className={determineClassName()}>
             <h1 className='overview-entry-header'>
-                <Link to={buildUrl(explanation.treePath)}>
-                    {explanation.name}
+                <Link to={buildUrl(node.treePath)}>
+                    {node.name}
                 </Link>
             </h1>
         </div>
@@ -76,9 +77,22 @@ function ExplanationViewer({ explanation }: { explanation: Explanation }) : JSX.
 
     function determineClassName(): string
     {
-        const isSelected = explanation.treePath.isEqualTo(activeTreePath);
+        const isSelected = node.treePath.isEqualTo(activeTreePath);
+        const result = ['overview-entry'];
 
-        const result = ['overview-entry', 'explanation'];
+        if ( node.isExercise() )
+        {
+            result.push('exercise');
+        }
+        else if ( node.isExplanation() )
+        {
+            result.push('explanation');
+        }
+        else
+        {
+            console.error('Unexpected node', node);
+            result.push('error');
+        }
 
         if ( isSelected )
         {
@@ -89,34 +103,19 @@ function ExplanationViewer({ explanation }: { explanation: Explanation }) : JSX.
     }
 }
 
+
+function ExplanationViewer({ explanation }: { explanation: Explanation }): JSX.Element
+{
+    return (
+        <LeafViewer node={explanation} />
+    );
+}
+
 function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
 {
-    const activeTreePath = useActiveTreePath();
-
     return (
-        <div className={determineClassName()}>
-            <h1 className='overview-entry-header'>
-                <Link to={buildUrl(exercise.treePath)}>
-                    {exercise.name}
-                </Link>
-            </h1>
-        </div>
+        <LeafViewer node={exercise} />
     );
-
-
-    function determineClassName(): string
-    {
-        const isSelected = exercise.treePath.isEqualTo(activeTreePath);
-
-        const result = ['overview-entry', 'exercise'];
-
-        if ( isSelected )
-        {
-            result.push('selected');
-        }
-
-        return result.join(' ');
-    }
 }
 
 function ErrorViewer(props: { node: Node }): JSX.Element
