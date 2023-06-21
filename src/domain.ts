@@ -179,6 +179,11 @@ export class Exercise extends Node
     {
         return this.data.markdown;
     }
+
+    public get difficulty(): number
+    {
+        return this.data.difficulty;
+    }
 }
 
 

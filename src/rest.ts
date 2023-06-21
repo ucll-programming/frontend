@@ -25,6 +25,7 @@ export interface ExerciseData extends NodeBase
     path: string,
     tree_path: string[],
     markdown: string,
+    difficulty: number,
 }
 
 export type MaterialNode = SectionData | ExplanationData | ExerciseData;

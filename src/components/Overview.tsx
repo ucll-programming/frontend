@@ -120,10 +120,44 @@ function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
     return (
         <LeafViewer
             caption={exercise.name}
-            symbol={<icons.PencilIcon />}
+            symbol={determineSymbol()}
             className='exercise'
             treePath={exercise.treePath} />
     );
+
+
+    function determineSymbol(): JSX.Element
+    {
+        const table = [
+            'BUG',
+            '①',
+            '②',
+            '③',
+            '④',
+            '⑤',
+            '⑥',
+            '⑦',
+            '⑧',
+            '⑨',
+            '⑩',
+            '⑪',
+            '⑫',
+            '⑬',
+            '⑭',
+            '⑮',
+            '⑯',
+            '⑰',
+            '⑱',
+            '⑲',
+            '⑳',
+        ];
+
+        return (
+            <>
+                {table[exercise.difficulty]}
+            </>
+        );
+    }
 }
 
 function ErrorViewer(props: { node: Node }): JSX.Element
