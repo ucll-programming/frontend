@@ -61,19 +61,27 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
 }
 
 
-function LeafViewer({ node } : { node: Node }): JSX.Element
+interface LeafProps
+{
+    caption: string,
+    symbol: JSX.Element,
+    className: string,
+    treePath: TreePath,
+}
+
+function LeafViewer({ caption, symbol, className, treePath } : LeafProps): JSX.Element
 {
     const activeTreePath = useActiveTreePath();
 
     return (
         <div className={determineClassName()}>
             <h1 className='overview-entry-header'>
-                <Link to={buildUrl(node.treePath)}>
+                <Link to={buildUrl(treePath)}>
                     <span className='overview-entry-header-label'>
-                        {node.name}
+                        {caption}
                     </span>
                     <span className='overview-entry-header-symbol'>
-                        {determineSymbol()}
+                        {symbol}
                     </span>
                 </Link>
             </h1>
@@ -81,49 +89,10 @@ function LeafViewer({ node } : { node: Node }): JSX.Element
     );
 
 
-    function determineSymbol() : JSX.Element
-    {
-        if ( node.isExercise() )
-        {
-            return (
-                <icons.PencilIcon />
-            );
-        }
-        else if ( node.isExplanation() )
-        {
-            return (
-                <icons.BookIcon />
-            )
-        }
-        else
-        {
-            console.error("Unexpected node type", node);
-
-            return (
-                <icons.XCircleFillIcon />
-            );
-        }
-    }
-
-
     function determineClassName(): string
     {
-        const isSelected = node.treePath.isEqualTo(activeTreePath);
-        const result = ['overview-entry'];
-
-        if ( node.isExercise() )
-        {
-            result.push('exercise');
-        }
-        else if ( node.isExplanation() )
-        {
-            result.push('explanation');
-        }
-        else
-        {
-            console.error('Unexpected node', node);
-            result.push('error');
-        }
+        const isSelected = treePath.isEqualTo(activeTreePath);
+        const result = [ 'overview-entry', className ];
 
         if ( isSelected )
         {
@@ -138,14 +107,22 @@ function LeafViewer({ node } : { node: Node }): JSX.Element
 function ExplanationViewer({ explanation }: { explanation: Explanation }): JSX.Element
 {
     return (
-        <LeafViewer node={explanation} />
+        <LeafViewer
+            caption={explanation.name}
+            symbol={<icons.BookIcon />}
+            className='explanation'
+            treePath={explanation.treePath} />
     );
 }
 
 function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
 {
     return (
-        <LeafViewer node={exercise} />
+        <LeafViewer
+            caption={exercise.name}
+            symbol={<icons.PencilIcon />}
+            className='exercise'
+            treePath={exercise.treePath} />
     );
 }
 
