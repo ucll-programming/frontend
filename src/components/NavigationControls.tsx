@@ -32,6 +32,7 @@ function GoToNext(): JSX.Element
     const [node, setNode] = useState<Node | undefined>(undefined);
     const path = useActiveTreePath();
     const domain = useDomain();
+    const className = 'navigation next';
 
     useEffect(() => {
         const func = async () => {
@@ -47,7 +48,7 @@ function GoToNext(): JSX.Element
     if ( node !== undefined && node.successorTreePath )
     {
         return (
-            <Link to={buildPageUrl(node.successorTreePath)} className="navigate-next .enabled">
+            <Link to={buildPageUrl(node.successorTreePath)} className={`${className} enabled`} title="Next">
                 <NextSymbol />
             </Link>
         );
@@ -55,7 +56,7 @@ function GoToNext(): JSX.Element
     else
     {
         return (
-            <span className="navigate-next .disabled">
+            <span className={`${className} disabled`}>
                 <NextSymbol />
             </span>
         );
@@ -67,6 +68,7 @@ function GoToPrevious(): JSX.Element
     const [node, setNode] = useState<Node | undefined>(undefined);
     const path = useActiveTreePath();
     const domain = useDomain();
+    const className = 'navigation previous';
 
     useEffect(() => {
         const func = async () => {
@@ -82,7 +84,7 @@ function GoToPrevious(): JSX.Element
     if ( node !== undefined && node.predecessorTreePath )
     {
         return (
-            <Link to={buildPageUrl(node.predecessorTreePath)} className="navigate-previous .enabled">
+            <Link to={buildPageUrl(node.predecessorTreePath)} className={`${className} enabled`} title="Previous">
                 <PreviousSymbol />
             </Link>
         );
@@ -90,7 +92,7 @@ function GoToPrevious(): JSX.Element
     else
     {
         return (
-            <span className="navigate-previous .disabled">
+            <span className={`${className} disabled`}>
                 <PreviousSymbol />
             </span>
         );
@@ -102,6 +104,7 @@ function GoToParent(): JSX.Element
     const [node, setNode] = useState<Node | undefined>(undefined);
     const path = useActiveTreePath();
     const domain = useDomain();
+    const className = 'navigation parent';
 
     useEffect(() => {
         const func = async () => {
@@ -117,7 +120,7 @@ function GoToParent(): JSX.Element
     if ( node !== undefined && node.parentTreePath )
     {
         return (
-            <Link to={buildPageUrl(node.parentTreePath)} className="navigate-parent .enabled">
+            <Link to={buildPageUrl(node.parentTreePath)} className={`${className} enabled`} title="Up">
                 <UpSymbol />
             </Link>
         );
@@ -125,7 +128,7 @@ function GoToParent(): JSX.Element
     else
     {
         return (
-            <span className="navigate-parent .disabled">
+            <span className={`${className} disabled`}>
                 <UpSymbol />
             </span>
         );
