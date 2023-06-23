@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import Overview from '@/components/Overview';
+import Overview from '@/components/overview/Overview';
 import { useEffect, useState } from 'react';
 import { Domain, DomainContext, createDummyNode, createNodeFromTreePath } from './domain';
 
