@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { buildPageUrl as buildNodeUrl } from '@/util';
 
 
-
 interface LeafProps
 {
     caption: string,
