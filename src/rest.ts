@@ -1,3 +1,5 @@
+export type Judgement = 'pass' | 'fail' | 'unknown';
+
 export interface NodeBase
 {
     path: string,
@@ -26,6 +28,7 @@ export interface ExerciseData extends NodeBase
     tree_path: string[],
     markdown: string,
     difficulty: number,
+    judgement: Judgement,
 }
 
 export type MaterialNode = SectionData | ExplanationData | ExerciseData;

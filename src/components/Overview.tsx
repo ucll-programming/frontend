@@ -66,11 +66,11 @@ interface LeafProps
 {
     caption: string,
     symbol: JSX.Element,
-    className: string,
+    classNames: string[],
     treePath: TreePath,
 }
 
-function LeafViewer({ caption, symbol, className, treePath } : LeafProps): JSX.Element
+function LeafViewer({ caption, symbol, classNames, treePath } : LeafProps): JSX.Element
 {
     const activeTreePath = useActiveTreePath();
 
@@ -93,7 +93,7 @@ function LeafViewer({ caption, symbol, className, treePath } : LeafProps): JSX.E
     function determineClassName(): string
     {
         const isSelected = treePath.isEqualTo(activeTreePath);
-        const result = [ 'overview-entry', className ];
+        const result = [ 'overview-entry', ...classNames ];
 
         if ( isSelected )
         {
@@ -111,18 +111,20 @@ function ExplanationViewer({ explanation }: { explanation: Explanation }): JSX.E
         <LeafViewer
             caption={explanation.name}
             symbol={<icons.BookIcon />}
-            className='explanation'
+            classNames={['explanation']}
             treePath={explanation.treePath} />
     );
 }
 
 function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
 {
+    const classNames = [ 'exercise', exercise.judgement ];
+
     return (
         <LeafViewer
             caption={exercise.name}
             symbol={<DifficultyViewer difficulty={exercise.difficulty} />}
-            className='exercise'
+            classNames={classNames}
             treePath={exercise.treePath} />
     );
 }
@@ -131,7 +133,7 @@ function ErrorViewer(props: { node: Node }): JSX.Element
 {
     return (
         <div>
-            ERROR
+            ERROR: Don't know what to do with {props.node.path}
         </div>
     );
 }

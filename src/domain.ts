@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { ExerciseData, ExplanationData, MaterialNode as NodeData, SectionData, fetchNodeData } from "./rest";
+import { ExerciseData, ExplanationData, Judgement, MaterialNode as NodeData, SectionData, fetchNodeData } from "./rest";
 
 
 export class TreePath
@@ -183,6 +183,11 @@ export class Exercise extends Node
     public get difficulty(): number
     {
         return this.data.difficulty;
+    }
+
+    public get judgement(): Judgement
+    {
+        return this.data.judgement;
     }
 }
 
