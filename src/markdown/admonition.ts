@@ -9,7 +9,7 @@ import { capitalize, isString } from "@/util";
 
 
 
-export const admonitionRemarkPlugin: Plugin = () => {
+export const remarkAdmonition: Plugin = () => {
     const categories = [
         'WARNING',
         'INFO',
@@ -34,7 +34,7 @@ export const admonitionRemarkPlugin: Plugin = () => {
 };
 
 
-export const admonitionRehypePlugin: Plugin = () => {
+export const rehypeAdmonition: Plugin = () => {
     return (tree) => {
         visit(tree, isAdmonition, (node: Node) => {
             const element = node as Element;
