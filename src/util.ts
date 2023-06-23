@@ -1,3 +1,6 @@
+import { TreePath } from '@/domain';
+
+
 export function isString(x: any) : x is string
 {
     return typeof x === 'string';
@@ -15,4 +18,11 @@ export function capitalize(s: string) : string
     const rest = s.slice(1).toLowerCase();
 
     return `${firstLetter}${rest}`;
+}
+
+export function buildPageUrl(treePath: TreePath): string
+{
+    const partsUrl = treePath.parts.join('/')
+
+    return `/nodes/${partsUrl}`;
 }

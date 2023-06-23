@@ -5,9 +5,11 @@ import { Markdown } from "@/components/Markdown";
 function ExplanationViewer({ explanation } : { explanation: Explanation })
 {
     return (
-        <Markdown>
-            {explanation.markdown}
-        </Markdown>
+        <div className="viewer explanation">
+            <Markdown>
+                {explanation.markdown}
+            </Markdown>
+        </div>
     );
 }
 

@@ -51,13 +51,13 @@ export function isExercise(node: MaterialNode) : node is ExerciseData
 
 export async function fetchNodeData(tree_path: string[]) : Promise<Response>
 {
-    const url = buildNodeUrl(tree_path);
+    const url = buildRestUrl(tree_path);
     const response = await fetch(url);
 
     return response;
 }
 
-export function buildNodeUrl(tree_path: string[]) : string
+export function buildRestUrl(tree_path: string[]) : string
 {
     return `/api/v1/nodes/${tree_path.join("/")}`;
 }

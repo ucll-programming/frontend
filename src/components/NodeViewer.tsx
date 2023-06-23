@@ -3,6 +3,7 @@ import { useDomain, Node } from "@/domain";
 import { useActiveTreePath } from "@/main";
 import ExerciseViewer from "./ExerciseViewer";
 import ExplanationViewer from "./ExplanationViewer";
+import SectionViewer from "./SectionViewer";
 
 
 function NodeViewer()
@@ -34,7 +35,7 @@ function NodeViewer()
     {
         return (
             <Fragment key={node.path}>
-                <p>Section {node.path}</p>
+                <SectionViewer section={node} />
             </Fragment>
         );
     }

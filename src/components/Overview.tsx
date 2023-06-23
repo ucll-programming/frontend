@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as icons from '@primer/octicons-react';
 import DifficultyViewer from './DifficultyViewer';
-
+import { buildPageUrl as buildNodeUrl } from '@/util';
 
 
 function SectionViewer({ section }: { section: Section }): JSX.Element
@@ -25,7 +25,7 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
     return (
         <div className={determineClassName()}>
             <h1 className='overview-entry-header'>
-                <Link to={buildUrl(section.treePath)}>
+                <Link to={buildNodeUrl(section.treePath)}>
                     {section.name}
                 </Link>
             </h1>
@@ -77,7 +77,7 @@ function LeafViewer({ caption, symbol, classNames, treePath } : LeafProps): JSX.
     return (
         <div className={determineClassName()}>
             <h1 className='overview-entry-header'>
-                <Link to={buildUrl(treePath)}>
+                <Link to={buildNodeUrl(treePath)}>
                     <span className='overview-entry-header-label'>
                         {caption}
                     </span>
@@ -188,12 +188,7 @@ function Overview({ root }: { root: Node }): JSX.Element
     );
 }
 
-function buildUrl(treePath: TreePath): string
-{
-    const partsUrl = treePath.parts.join('/')
 
-    return `/nodes/${partsUrl}`;
-}
 
 
 export default Overview;

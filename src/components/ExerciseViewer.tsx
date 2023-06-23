@@ -5,9 +5,11 @@ import { Markdown } from "@/components/Markdown";
 function ExerciseViewer({ exercise } : { exercise: Exercise })
 {
     return (
-        <Markdown>
-            {exercise.markdown}
-        </Markdown>
+        <div className="viewer exercise">
+            <Markdown>
+                {exercise.markdown}
+            </Markdown>
+        </div>
     );
 }
 
