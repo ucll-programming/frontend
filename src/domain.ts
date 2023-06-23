@@ -265,34 +265,10 @@ export function createNodeFromData(data: NodeData): Node
 
 export class Domain
 {
-    // private lookupTable: { [key: string]: Node };
-
     public constructor(public readonly root: Node)
     {
-        // this.lookupTable = Domain.buildTable(root);
+        // NOP
     }
-
-    // private static buildTable(root: Node): { [key: string]: Node }
-    // {
-    //     const result: { [key: string]: Node } = {};
-    //     recurse(root);
-    //     return result;
-
-    //     function recurse(node: Node)
-    //     {
-    //         result[node.treePath.toString()] = node;
-
-    //         if ( node.isSection() )
-    //         {
-    //             const section = node;
-
-    //             for ( const child of section.children )
-    //             {
-    //                 recurse(child);
-    //             }
-    //         }
-    //     }
-    // }
 
     public async lookup(treePath: TreePath): Promise<Node | undefined>
     {
