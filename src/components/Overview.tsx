@@ -2,8 +2,6 @@ import { Exercise, Explanation, Node, Section, TreePath } from '@/domain';
 import { useActiveTreePath } from '@/main';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import * as icons from '@primer/octicons-react';
-import DifficultyViewer from './DifficultyViewer';
 import { buildPageUrl as buildNodeUrl } from '@/util';
 import NodeSymbolViewer from './NodeSymbolViewer';
 
