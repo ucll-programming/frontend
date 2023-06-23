@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import * as icons from '@primer/octicons-react';
 import DifficultyViewer from './DifficultyViewer';
 import { buildPageUrl as buildNodeUrl } from '@/util';
+import NodeSymbolViewer from './NodeSymbolViewer';
 
 
 function SectionViewer({ section }: { section: Section }): JSX.Element
@@ -110,7 +111,7 @@ function ExplanationViewer({ explanation }: { explanation: Explanation }): JSX.E
     return (
         <LeafViewer
             caption={explanation.name}
-            symbol={<icons.BookIcon />}
+            symbol={<NodeSymbolViewer node={explanation} />}
             classNames={['explanation']}
             treePath={explanation.treePath} />
     );
@@ -123,7 +124,7 @@ function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
     return (
         <LeafViewer
             caption={exercise.name}
-            symbol={<DifficultyViewer difficulty={exercise.difficulty} />}
+            symbol={<NodeSymbolViewer node={exercise} />}
             classNames={classNames}
             treePath={exercise.treePath} />
     );
@@ -187,8 +188,6 @@ function Overview({ root }: { root: Node }): JSX.Element
         </div>
     );
 }
-
-
 
 
 export default Overview;
