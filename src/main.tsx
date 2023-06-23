@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { LoaderFunctionArgs, RouterProvider, createBrowserRouter, useParams } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter, useParams } from 'react-router-dom';
 import App from './App';
 import NodeViewer from '@/components/NodeViewer';
-import { fetchNodeData } from './rest';
 import { TreePath } from './domain';
 
 
