@@ -2,7 +2,64 @@ import { Section, Node, Explanation, Exercise } from "@/domain";
 import { buildPageUrl } from "@/util";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import NodeSymbolViewer from "./NodeSymbolViewer";
 
+
+
+function SectionTile({ section } : { section: Section }): JSX.Element
+{
+    return (
+        <div className="tile section">
+            <NodeSymbolViewer node={section} />
+            <Link to={buildPageUrl(section.treePath)} className="caption-container">
+                <span className="caption">
+                    {section.name}
+                </span>
+            </Link>
+        </div>
+    );
+}
+
+function ExerciseTile({ exercise } : { exercise: Exercise }): JSX.Element
+{
+    return (
+        <div className={`tile exercise ${exercise.judgement}`}>
+            <div className="symbol">
+                <NodeSymbolViewer node={exercise} />
+            </div>
+            <Link to={buildPageUrl(exercise.treePath)} className="caption-container">
+                <span className="caption">
+                    {exercise.name}
+                </span>
+            </Link>
+        </div>
+    );
+}
+
+function ExplanationTile({ explanation } : { explanation: Explanation }): JSX.Element
+{
+    return (
+        <div className="tile explanation">
+            <div className="symbol">
+                <NodeSymbolViewer node={explanation} />
+            </div>
+            <Link to={buildPageUrl(explanation.treePath)} className="caption-container">
+                <span className="caption">
+                    {explanation.name}
+                </span>
+            </Link>
+        </div>
+    );
+}
+
+function ErrorTile({ node } : { node: Node }) : JSX.Element
+{
+    return (
+        <div className="tile error">
+            {node.name}
+        </div>
+    );
+}
 
 function SectionViewer({ section } : { section: Section })
 {
@@ -20,79 +77,42 @@ function SectionViewer({ section } : { section: Section })
 
     return (
         <div className="viewer section">
-            <table className="section-table">
-                <tbody>
-                    {
-                        children.map(renderChild)
-                    }
-                </tbody>
-            </table>
+            <div className="tile-container">
+                {
+                    children.map(renderTile)
+                }
+            </div>
         </div>
     );
 
 
-    function renderChild(child: Node): JSX.Element
+    function renderTile(child: Node): JSX.Element
     {
         if ( child.isSection() )
         {
-            return renderSection(child);
+            return (
+                <SectionTile section={child} />
+            );
         }
         else if ( child.isExercise() )
         {
-            return renderExercise(child);
+            return (
+                <ExerciseTile exercise={child} />
+            );
         }
         else if ( child.isExplanation() )
         {
-            return renderExplanation(child);
+            return (
+                <ExplanationTile explanation={child} />
+            );
         }
         else
         {
-            console.log(`Error: unrecognized node`, child);
-            throw new Error(`Unknown node ${child}`);
-        }
-    }
+            console.error(`Unrecognized node`, child);
 
-    function renderSection(section: Section): JSX.Element
-    {
-        return (
-            <tr className="section">
-                <td>
-                    <Link to={buildPageUrl(section.treePath)}>{section.name}</Link>
-                </td>
-                <td />
-            </tr>
-        )
-    }
-
-    function renderExplanation(explanation: Explanation): JSX.Element
-    {
-        return (
-            <tr className="explanation">
-                <td>
-                    <Link to={buildPageUrl(explanation.treePath)}>{explanation.name}</Link>
-                </td>
-                <td />
-            </tr>
-        )
-    }
-
-    function renderExercise(exercise: Exercise): JSX.Element
-    {
-        return (
-            <tr className={determineClassName()}>
-                <td>
-                    <Link to={buildPageUrl(exercise.treePath)}>{exercise.name}</Link>
-                </td>
-                <td />
-            </tr>
-        )
-
-
-        function determineClassName(): string
-        {
-            const result = [ 'exercise', exercise.judgement ];
-
-            return result.join(' ');
+            return (
+                <ErrorTile node={child} />
+            );
         }
     }
 }

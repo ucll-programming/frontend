@@ -26,7 +26,9 @@ function DifficultyViewer({ difficulty } : { difficulty: number }): JSX.Element
 
     return (
         <>
-            {table[difficulty]}
+            <span className="difficulty">
+                {table[difficulty]}
+            </span>
         </>
     );
 }
