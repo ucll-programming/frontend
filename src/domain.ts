@@ -6,7 +6,10 @@ export class TreePath
 {
     public constructor(public readonly parts: string[])
     {
-        // NOP
+        if ( parts === undefined )
+        {
+            throw new Error("Bug");
+        }
     }
 
     public add(part: string): TreePath
@@ -62,14 +65,36 @@ export abstract class Node
         return this.data.name;
     }
 
-    public get path(): string
-    {
-        return this.data.path;
-    }
-
     public get treePath(): TreePath
     {
         return new TreePath(this.data.tree_path);
+    }
+
+    public get successorTreePath(): TreePath | null
+    {
+        return this.makeTreePath(this.data.successor_tree_path);
+    }
+
+    public get predecessorTreePath(): TreePath | null
+    {
+        return this.makeTreePath(this.data.predecessor_tree_path);
+    }
+
+    public get parentTreePath(): TreePath | null
+    {
+        return this.makeTreePath(this.data.parent_tree_path);
+    }
+
+    private makeTreePath(path: string[] | null) : TreePath | null
+    {
+        if ( path !== null )
+        {
+            return new TreePath(path);
+        }
+        else
+        {
+            return null;
+        }
     }
 
     protected abstract get data(): NodeData;
@@ -241,8 +266,10 @@ export function createDummyNode(): Node
         type: 'section',
         tree_path: [],
         children: [],
-        path: 'DUMMY PATH',
         name: 'DUMMY',
+        successor_tree_path: null,
+        predecessor_tree_path: null,
+        parent_tree_path: null,
     }
 
     return createNodeFromData(data);

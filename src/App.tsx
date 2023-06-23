@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import Overview from '@/components/overview/Overview';
 import { useEffect, useState } from 'react';
 import { Domain, DomainContext, createDummyNode, createNodeFromTreePath } from './domain';
+import Sidebar from './components/Sidebar';
 
 
 function App()
@@ -23,11 +24,7 @@ function App()
   return (
     <>
       <DomainContext.Provider value={domain}>
-        <div id="sidebar">
-          <nav>
-            <Overview root={domain.root} />
-          </nav>
-        </div>
+        <Sidebar root={domain.root} />
         <div id="main-view-container">
           <div id="main-view">
             <Outlet />

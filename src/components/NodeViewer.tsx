@@ -27,14 +27,14 @@ function NodeViewer()
         return (
             <Fragment key="unknown">
                 <p>Error: {path.toString()} not found in domain</p>
-                <p>Domain root: {domain.root.path}</p>
+                <p>Domain root: {domain.root.treePath.toString()}</p>
             </Fragment>
         )
     }
     else if ( node.isSection() )
     {
         return (
-            <Fragment key={node.path}>
+            <Fragment key={node.treePath.toString()}>
                 <SectionViewer section={node} />
             </Fragment>
         );
@@ -42,7 +42,7 @@ function NodeViewer()
     else if ( node.isExercise() )
     {
         return (
-            <Fragment key={node.path}>
+            <Fragment key={node.treePath.toString()}>
                 <ExerciseViewer exercise={node} />
             </Fragment>
         );
@@ -50,7 +50,7 @@ function NodeViewer()
     else if ( node.isExplanation() )
     {
         return (
-            <Fragment key={node.path}>
+            <Fragment key={node.treePath.toString()}>
                 <ExplanationViewer explanation={node} />
             </Fragment>
         );
