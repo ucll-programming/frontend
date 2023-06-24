@@ -1,4 +1,4 @@
-import { createHintIcon, createInformationIcon, createQuestionIcon, createTaskIcon, createVideoIcon, createWarningIcon } from "@/markdown/icons";
+import { createHintIcon, createInformationIcon, createLightBulbIcon, createQuestionIcon, createTaskIcon, createVideoIcon, createWarningIcon } from "@/markdown/icons";
 import { visit } from "unist-util-visit";
 import { h } from "hastscript";
 import type { Node } from 'unist';
@@ -17,6 +17,7 @@ export const remarkAdmonition: Plugin = () => {
         'VIDEO',
         'HINT',
         'QUESTION',
+        'EXAMPLE',
     ];
 
     return (tree) => {
@@ -73,6 +74,8 @@ export const rehypeAdmonition: Plugin = () => {
                 return createHintIcon();
             case 'question':
                 return createQuestionIcon();
+            case 'example':
+                return createLightBulbIcon();
             default:
                 return h('BUG');
         }
