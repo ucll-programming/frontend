@@ -1,4 +1,4 @@
-import { useDomain, Node } from "@/domain";
+import { useDomain, ContentNode } from "@/domain";
 import { useActiveTreePath } from "@/main";
 import { buildPageUrl } from "@/util";
 import { useEffect, useState } from "react";
@@ -29,7 +29,7 @@ function UpSymbol(): JSX.Element
 
 function GoToNext(): JSX.Element
 {
-    const [node, setNode] = useState<Node | undefined>(undefined);
+    const [node, setNode] = useState<ContentNode | undefined>(undefined);
     const path = useActiveTreePath();
     const domain = useDomain();
     const className = 'navigation next';
@@ -65,7 +65,7 @@ function GoToNext(): JSX.Element
 
 function GoToPrevious(): JSX.Element
 {
-    const [node, setNode] = useState<Node | undefined>(undefined);
+    const [node, setNode] = useState<ContentNode | undefined>(undefined);
     const path = useActiveTreePath();
     const domain = useDomain();
     const className = 'navigation previous';
@@ -101,7 +101,7 @@ function GoToPrevious(): JSX.Element
 
 function GoToParent(): JSX.Element
 {
-    const [node, setNode] = useState<Node | undefined>(undefined);
+    const [node, setNode] = useState<ContentNode | undefined>(undefined);
     const path = useActiveTreePath();
     const domain = useDomain();
     const className = 'navigation parent';

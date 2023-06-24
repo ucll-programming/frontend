@@ -1,8 +1,8 @@
-import { Node } from '@/domain';
+import { ContentNode } from '@/domain';
 
 
 
-function ErrorViewer(props: { node: Node }): JSX.Element
+function ErrorViewer(props: { node: ContentNode }): JSX.Element
 {
     return (
         <div>

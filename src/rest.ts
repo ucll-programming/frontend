@@ -29,20 +29,20 @@ export interface ExerciseRestData extends NodeRestData
     judgement: Judgement,
 }
 
-export type MaterialNode = SectionRestData | ExplanationRestData | ExerciseRestData;
+export type MaterialRestData = SectionRestData | ExplanationRestData | ExerciseRestData;
 
 
-export function isSection(node: MaterialNode) : node is SectionRestData
+export function isSection(node: MaterialRestData) : node is SectionRestData
 {
     return node.type == 'section';
 }
 
-export function isExplanation(node: MaterialNode) : node is ExplanationRestData
+export function isExplanation(node: MaterialRestData) : node is ExplanationRestData
 {
     return node.type == 'explanation';
 }
 
-export function isExercise(node: MaterialNode) : node is ExerciseRestData
+export function isExercise(node: MaterialRestData) : node is ExerciseRestData
 {
     return node.type == 'exercise';
 }

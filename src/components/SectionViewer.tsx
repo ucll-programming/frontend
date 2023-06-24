@@ -1,4 +1,4 @@
-import { Section, Node, Explanation, Exercise } from "@/domain";
+import { Section, ContentNode, Explanation, Exercise } from "@/domain";
 import { buildPageUrl } from "@/util";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -52,7 +52,7 @@ function ExplanationTile({ explanation } : { explanation: Explanation }): JSX.El
     );
 }
 
-function ErrorTile({ node } : { node: Node }) : JSX.Element
+function ErrorTile({ node } : { node: ContentNode }) : JSX.Element
 {
     return (
         <div className="tile error">
@@ -63,7 +63,7 @@ function ErrorTile({ node } : { node: Node }) : JSX.Element
 
 function SectionViewer({ section } : { section: Section })
 {
-    const [ children, setChildren ] = useState<Node[]>([]);
+    const [ children, setChildren ] = useState<ContentNode[]>([]);
 
     useEffect(() => {
         const func = async () => {
@@ -86,7 +86,7 @@ function SectionViewer({ section } : { section: Section })
     );
 
 
-    function renderTile(child: Node): JSX.Element
+    function renderTile(child: ContentNode): JSX.Element
     {
         if ( child.isSection() )
         {

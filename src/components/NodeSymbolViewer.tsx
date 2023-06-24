@@ -1,9 +1,9 @@
-import { Node } from '@/domain';
+import { ContentNode } from '@/domain';
 import DifficultyViewer from './DifficultyViewer';
 import * as icons from '@primer/octicons-react';
 
 
-function NodeSymbolViewer({ node } : { node: Node }): JSX.Element
+function NodeSymbolViewer({ node } : { node: ContentNode }): JSX.Element
 {
     if ( node.isExercise() )
     {

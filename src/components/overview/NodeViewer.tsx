@@ -2,10 +2,10 @@ import SectionViewer from '@/components/overview/SectionViewer';
 import ExerciseViewer from '@/components/overview/ExerciseViewer';
 import ExplanationViewer from '@/components/overview/ExplanationViewer';
 import ErrorViewer from '@/components/overview/ErrorViewer';
-import { Node } from '@/domain';
+import { ContentNode } from '@/domain';
 
 
-function NodeViewer(props: { node: Node }): JSX.Element
+function NodeViewer(props: { node: ContentNode }): JSX.Element
 {
     if ( props.node.isExercise() )
     {

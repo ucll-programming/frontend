@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { useDomain, Node } from "@/domain";
+import { useDomain, ContentNode } from "@/domain";
 import { useActiveTreePath } from "@/main";
 import ExerciseViewer from "./ExerciseViewer";
 import ExplanationViewer from "./ExplanationViewer";
@@ -8,7 +8,7 @@ import SectionViewer from "./SectionViewer";
 
 function NodeViewer()
 {
-    const [node, setNode] = useState<Node | undefined>(undefined);
+    const [node, setNode] = useState<ContentNode | undefined>(undefined);
     const path = useActiveTreePath();
     const domain = useDomain();
 

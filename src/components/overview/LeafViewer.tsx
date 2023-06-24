@@ -1,7 +1,7 @@
 import { TreePath } from '@/domain';
 import { useActiveTreePath } from '@/main';
 import { Link } from 'react-router-dom';
-import { buildPageUrl as buildNodeUrl } from '@/util';
+import { buildPageUrl } from '@/util';
 
 
 interface LeafProps
@@ -19,7 +19,7 @@ function LeafViewer({ caption, symbol, classNames, treePath } : LeafProps): JSX.
     return (
         <div className={determineClassName()}>
             <h1 className='overview-entry-header'>
-                <Link to={buildNodeUrl(treePath)}>
+                <Link to={buildPageUrl(treePath)}>
                     <span className='overview-entry-header-label'>
                         {caption}
                     </span>

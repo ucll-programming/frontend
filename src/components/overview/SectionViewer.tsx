@@ -1,4 +1,4 @@
-import { Node, Section } from '@/domain';
+import { ContentNode, Section } from '@/domain';
 import { useActiveTreePath } from '@/main';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -8,7 +8,7 @@ import NodeViewer from '@/components/overview/NodeViewer';
 
 function SectionViewer({ section }: { section: Section }): JSX.Element
 {
-    const [ children, setChildren ] = useState<Node[]>([]);
+    const [ children, setChildren ] = useState<ContentNode[]>([]);
     const activeTreePath = useActiveTreePath();
 
     useEffect(() => {

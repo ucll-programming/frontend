@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { ExerciseRestData, ExplanationRestData, Judgement, MaterialNode as NodeData, SectionRestData, fetchNodeData } from "./rest";
+import { ExerciseRestData, ExplanationRestData, Judgement, MaterialRestData, SectionRestData, fetchNodeData } from "./rest";
 
 
 export class TreePath
@@ -53,7 +53,7 @@ export class TreePath
 }
 
 
-export abstract class Node
+export abstract class ContentNode
 {
     public constructor()
     {
@@ -97,7 +97,7 @@ export abstract class Node
         }
     }
 
-    protected abstract get data(): NodeData;
+    protected abstract get data(): MaterialRestData;
 
     public abstract isSection(): this is Section;
 
@@ -107,11 +107,11 @@ export abstract class Node
 }
 
 
-export class Section extends Node
+export class Section extends ContentNode
 {
-    private children: Node[] | undefined;
+    private children: ContentNode[] | undefined;
 
-    private resolvers: ((children: Node[]) => void)[];
+    private resolvers: ((children: ContentNode[]) => void)[];
 
     public constructor(protected data: SectionRestData)
     {
@@ -127,7 +127,7 @@ export class Section extends Node
         this.fetchData();
     }
 
-    public async getChildren(): Promise<Node[]>
+    public async getChildren(): Promise<ContentNode[]>
     {
         if ( this.children === undefined )
         {
@@ -164,7 +164,7 @@ export class Section extends Node
         return true;
     }
 
-    public async lookup(part: string): Promise<Node | undefined>
+    public async lookup(part: string): Promise<ContentNode | undefined>
     {
         const children = await this.getChildren();
 
@@ -173,7 +173,7 @@ export class Section extends Node
 }
 
 
-export class Exercise extends Node
+export class Exercise extends ContentNode
 {
     public constructor(protected data: ExerciseRestData)
     {
@@ -217,7 +217,7 @@ export class Exercise extends Node
 }
 
 
-export class Explanation extends Node
+export class Explanation extends ContentNode
 {
     public constructor(protected data: ExplanationRestData)
     {
@@ -251,16 +251,16 @@ export class Explanation extends Node
 }
 
 
-export async function createNodeFromTreePath(tree_path: string[]): Promise<Node>
+export async function createNodeFromTreePath(tree_path: string[]): Promise<ContentNode>
 {
     const response = await fetchNodeData(tree_path);
-    const data = await response.json() as NodeData;
+    const data = await response.json() as MaterialRestData;
 
     return createNodeFromData(data);
 }
 
 
-export function createDummyNode(): Node
+export function createDummyNode(): ContentNode
 {
     const data: SectionRestData = {
         type: 'section',
@@ -276,7 +276,7 @@ export function createDummyNode(): Node
 }
 
 
-export function createNodeFromData(data: NodeData): Node
+export function createNodeFromData(data: MaterialRestData): ContentNode
 {
     switch ( data.type )
     {
@@ -292,14 +292,14 @@ export function createNodeFromData(data: NodeData): Node
 
 export class Domain
 {
-    public constructor(public readonly root: Node)
+    public constructor(public readonly root: ContentNode)
     {
         // NOP
     }
 
-    public async lookup(treePath: TreePath): Promise<Node | undefined>
+    public async lookup(treePath: TreePath): Promise<ContentNode | undefined>
     {
-        let current: Node = this.root;
+        let current: ContentNode = this.root;
 
         for ( const part of treePath.parts )
         {
@@ -327,7 +327,9 @@ export class Domain
     }
 }
 
+
 export const DomainContext = createContext<Domain>(new Domain(createDummyNode()));
+
 
 export function useDomain()
 {

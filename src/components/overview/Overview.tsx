@@ -1,11 +1,11 @@
-import { Node } from '@/domain';
+import { ContentNode } from '@/domain';
 import { useEffect, useState } from 'react';
 import NodeViewer from '@/components/overview/NodeViewer';
 
 
-function Overview({ root }: { root: Node }): JSX.Element
+function Overview({ root }: { root: ContentNode }): JSX.Element
 {
-    const [topLevelNodes, setTopLevelNodes] = useState<Node[]>([]);
+    const [topLevelNodes, setTopLevelNodes] = useState<ContentNode[]>([]);
 
     useEffect(() => {
         const func = async () => {
