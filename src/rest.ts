@@ -1,6 +1,6 @@
 export type Judgement = 'pass' | 'fail' | 'unknown';
 
-export interface NodeBase
+export interface NodeRestData
 {
     name: string,
     tree_path: string[],
@@ -9,19 +9,19 @@ export interface NodeBase
     parent_tree_path: string[] | null,
 }
 
-export interface SectionData extends NodeBase
+export interface SectionRestData extends NodeRestData
 {
     type: 'section',
     children: string[],
 }
 
-export interface ExplanationData extends NodeBase
+export interface ExplanationRestData extends NodeRestData
 {
     type: 'explanation',
     markdown: string,
 }
 
-export interface ExerciseData extends NodeBase
+export interface ExerciseRestData extends NodeRestData
 {
     type: 'exercise',
     markdown: string,
@@ -29,20 +29,20 @@ export interface ExerciseData extends NodeBase
     judgement: Judgement,
 }
 
-export type MaterialNode = SectionData | ExplanationData | ExerciseData;
+export type MaterialNode = SectionRestData | ExplanationRestData | ExerciseRestData;
 
 
-export function isSection(node: MaterialNode) : node is SectionData
+export function isSection(node: MaterialNode) : node is SectionRestData
 {
     return node.type == 'section';
 }
 
-export function isExplanation(node: MaterialNode) : node is ExplanationData
+export function isExplanation(node: MaterialNode) : node is ExplanationRestData
 {
     return node.type == 'explanation';
 }
 
-export function isExercise(node: MaterialNode) : node is ExerciseData
+export function isExercise(node: MaterialNode) : node is ExerciseRestData
 {
     return node.type == 'exercise';
 }

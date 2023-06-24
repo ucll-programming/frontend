@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { ExerciseData, ExplanationData, Judgement, MaterialNode as NodeData, SectionData, fetchNodeData } from "./rest";
+import { ExerciseRestData, ExplanationRestData, Judgement, MaterialNode as NodeData, SectionRestData, fetchNodeData } from "./rest";
 
 
 export class TreePath
@@ -113,7 +113,7 @@ export class Section extends Node
 
     private resolvers: ((children: Node[]) => void)[];
 
-    public constructor(protected data: SectionData)
+    public constructor(protected data: SectionRestData)
     {
         super();
 
@@ -175,7 +175,7 @@ export class Section extends Node
 
 export class Exercise extends Node
 {
-    public constructor(protected data: ExerciseData)
+    public constructor(protected data: ExerciseRestData)
     {
         super();
 
@@ -219,7 +219,7 @@ export class Exercise extends Node
 
 export class Explanation extends Node
 {
-    public constructor(protected data: ExplanationData)
+    public constructor(protected data: ExplanationRestData)
     {
         super();
 
@@ -262,7 +262,7 @@ export async function createNodeFromTreePath(tree_path: string[]): Promise<Node>
 
 export function createDummyNode(): Node
 {
-    const data: SectionData = {
+    const data: SectionRestData = {
         type: 'section',
         tree_path: [],
         children: [],
