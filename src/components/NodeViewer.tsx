@@ -24,6 +24,7 @@ function NodeViewer()
 
     if ( node === undefined )
     {
+        console.log('Error: could not find node in domain:', path);
         return (
             <Fragment key="unknown">
                 <p>Error: {path.toString()} not found in domain</p>

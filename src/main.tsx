@@ -26,9 +26,16 @@ export function useActiveTreePath(): TreePath
 
   if ( path !== undefined )
   {
-    const parts = path.split('/');
+    if ( path == '' )
+    {
+      return new TreePath([]);
+    }
+    else
+    {
+      const parts = path.split('/');
 
-    return new TreePath(parts);
+      return new TreePath(parts);
+    }
   }
   else
   {
