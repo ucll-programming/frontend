@@ -20,13 +20,8 @@ export const remarkCode: Plugin = () => {
                 const tagName = 'div';
                 const classNames = [ identifyingClassName ];
 
-                if ( 'class' in attributes )
-                {
-                    classNames.push(attributes.class as string);
-                }
-
                 data.hName = tagName;
-                data.hProperties = {className: classNames};
+                data.hProperties = {className: classNames, caption: attributes.caption};
             }
         });
     };
@@ -39,8 +34,12 @@ export const rehypeCode: Plugin = () => {
             const element = node as Element;
             const children = element.children;
             const properties = element.properties || {};
-            const classNames = getClassNames(properties.className as string | string[]);
-            const category = classNames.filter(cn => cn !== identifyingClassName)[0];
+            const category = properties.caption as string;
+
+            if ( !category )
+            {
+                console.error("Missing caption for code container");
+            }
 
             element.children = [
                 h('div', { className: 'code-container-header'}, [
