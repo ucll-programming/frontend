@@ -8,7 +8,7 @@ import { isString } from "@/util";
 
 
 
-export const usageRemarkPlugin: Plugin = () => {
+export const remarkUsage: Plugin = () => {
     return (tree) => {
         visit(tree, 'containerDirective', (node: ContainerDirective) => {
             if (node.name === 'USAGE')
