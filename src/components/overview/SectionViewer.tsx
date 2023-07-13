@@ -1,6 +1,5 @@
 import { ContentNode, Section } from '@/domain';
 import { useActiveTreePath } from '@/main';
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { buildPageUrl } from '@/util';
 import NodeViewer from '@/components/overview/NodeViewer';

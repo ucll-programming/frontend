@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { ExerciseRestData, ExplanationRestData, Judgement, MaterialRestData, SectionRestData, NodeRestData, isSection, isExplanation, isExercise, fetchOverview } from "./rest";
+import { ExerciseRestData, ExplanationRestData, Judgement, MaterialRestData, SectionRestData, NodeRestData, isSection, isExplanation, isExercise, fetchOverview, fetchJudgement } from "./rest";
 
 
 export class TreePath
@@ -149,8 +149,7 @@ export class Exercise extends ContentNode
 
     public async judgement(): Promise<Judgement>
     {
-        // TODO
-        return "unknown";
+        return fetchJudgement(this.judgementUrl);
     }
 }
 

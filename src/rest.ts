@@ -59,3 +59,32 @@ export async function fetchOverview(): Promise<MaterialRestData>
 
     return data;
 }
+
+interface JudgementSuccess
+{
+    status: 'ok',
+    judgement: Judgement,
+}
+
+interface JudgementFailure
+{
+    status: 'fail',
+}
+
+type JudgementResponse = JudgementSuccess | JudgementFailure;
+
+export async function fetchJudgement(url: string): Promise<Judgement>
+{
+    const response = await fetch(url);
+    const data = await response.json() as JudgementResponse;
+
+    if ( data.status === 'ok' )
+    {
+        return data.judgement;
+    }
+    else
+    {
+        console.error(`Failed to fetch ${url}`);
+        return 'unknown';
+    }
+}
