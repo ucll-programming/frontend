@@ -4,58 +4,58 @@ export interface NodeRestData
 {
     name: string,
     tree_path: string[],
-    successor_tree_path: string[] | null,
-    predecessor_tree_path: string[] | null,
-    parent_tree_path: string[] | null,
+    successor: string[] | null,
+    predecessor: string[] | null,
+    parent: string[] | null,
 }
 
 export interface SectionRestData extends NodeRestData
 {
     type: 'section',
-    children: string[],
+    children: MaterialRestData[],
 }
 
-export interface ExplanationRestData extends NodeRestData
+export interface LeafRestData extends NodeRestData
+{
+    markdown_url: string,
+}
+
+export interface ExplanationRestData extends LeafRestData
 {
     type: 'explanation',
-    markdown: string,
+
 }
 
-export interface ExerciseRestData extends NodeRestData
+export interface ExerciseRestData extends LeafRestData
 {
     type: 'exercise',
-    markdown: string,
+    markdown_url: string,
     difficulty: number,
-    judgement: Judgement,
+    judgement_url: string,
 }
 
 export type MaterialRestData = SectionRestData | ExplanationRestData | ExerciseRestData;
 
-
-export function isSection(node: MaterialRestData) : node is SectionRestData
+export function isSection(node: MaterialRestData): node is SectionRestData
 {
     return node.type == 'section';
 }
 
-export function isExplanation(node: MaterialRestData) : node is ExplanationRestData
+export function isExplanation(node: MaterialRestData): node is ExplanationRestData
 {
     return node.type == 'explanation';
 }
 
-export function isExercise(node: MaterialRestData) : node is ExerciseRestData
+export function isExercise(node: MaterialRestData): node is ExerciseRestData
 {
     return node.type == 'exercise';
 }
 
-export async function fetchNodeData(tree_path: string[]) : Promise<Response>
+export async function fetchOverview(): Promise<MaterialRestData>
 {
-    const url = buildRestUrl(tree_path);
+    const url = '/api/v1/overview';
     const response = await fetch(url);
+    const data = await response.json() as MaterialRestData;
 
-    return response;
-}
-
-export function buildRestUrl(tree_path: string[]) : string
-{
-    return `/api/v1/nodes/${tree_path.join("/")}`;
+    return data;
 }

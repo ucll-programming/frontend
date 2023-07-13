@@ -8,18 +8,8 @@ import NodeViewer from '@/components/overview/NodeViewer';
 
 function SectionViewer({ section }: { section: Section }): JSX.Element
 {
-    const [ children, setChildren ] = useState<ContentNode[]>([]);
     const activeTreePath = useActiveTreePath();
-
-    useEffect(() => {
-        const func = async () => {
-            const children = await section.getChildren();
-
-            setChildren(children);
-        };
-
-        func();
-    }, [section]);
+    const children = section.children;
 
     return (
         <div className={determineClassName()}>

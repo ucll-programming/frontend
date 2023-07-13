@@ -63,17 +63,7 @@ function ErrorTile({ node } : { node: ContentNode }) : JSX.Element
 
 function SectionViewer({ section } : { section: Section })
 {
-    const [ children, setChildren ] = useState<ContentNode[]>([]);
-
-    useEffect(() => {
-        const func = async () => {
-            const children = await section.getChildren();
-
-            setChildren(children);
-        };
-
-        func();
-    }, [section]);
+    const children = section.children;
 
     return (
         <div className="viewer section">

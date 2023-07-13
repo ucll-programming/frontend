@@ -29,26 +29,16 @@ function UpSymbol(): JSX.Element
 
 function GoToNext(): JSX.Element
 {
-    const [node, setNode] = useState<ContentNode | undefined>(undefined);
     const path = useActiveTreePath();
     const domain = useDomain();
     const className = 'navigation next';
+    const node = domain.lookup(path);
+    const successorPath = node?.successor?.treePath;
 
-    useEffect(() => {
-        const func = async () => {
-            const node = await domain.lookup(path);
-
-            setNode(node);
-        };
-
-        func();
-    }, [path, domain]);
-
-
-    if ( node !== undefined && node.successorTreePath )
+    if ( successorPath )
     {
         return (
-            <Link to={buildPageUrl(node.successorTreePath)} className={`${className} enabled`} title="Next">
+            <Link to={buildPageUrl(successorPath)} className={`${className} enabled`} title="Next">
                 <NextSymbol />
             </Link>
         );
@@ -65,26 +55,16 @@ function GoToNext(): JSX.Element
 
 function GoToPrevious(): JSX.Element
 {
-    const [node, setNode] = useState<ContentNode | undefined>(undefined);
-    const path = useActiveTreePath();
+    const activePath = useActiveTreePath();
     const domain = useDomain();
     const className = 'navigation previous';
+    const node = domain.lookup(activePath);
+    const predecessorPath = node?.predecessor?.treePath;
 
-    useEffect(() => {
-        const func = async () => {
-            const node = await domain.lookup(path);
-
-            setNode(node);
-        };
-
-        func();
-    }, [path, domain]);
-
-
-    if ( node !== undefined && node.predecessorTreePath )
+    if ( predecessorPath )
     {
         return (
-            <Link to={buildPageUrl(node.predecessorTreePath)} className={`${className} enabled`} title="Previous">
+            <Link to={buildPageUrl(predecessorPath)} className={`${className} enabled`} title="Previous">
                 <PreviousSymbol />
             </Link>
         );
@@ -101,26 +81,16 @@ function GoToPrevious(): JSX.Element
 
 function GoToParent(): JSX.Element
 {
-    const [node, setNode] = useState<ContentNode | undefined>(undefined);
     const path = useActiveTreePath();
     const domain = useDomain();
     const className = 'navigation parent';
+    const node = domain.lookup(path);
+    const parentPath = node?.parent?.treePath;
 
-    useEffect(() => {
-        const func = async () => {
-            const node = await domain.lookup(path);
-
-            setNode(node);
-        };
-
-        func();
-    }, [path, domain]);
-
-
-    if ( node !== undefined && node.parentTreePath )
+    if ( parentPath )
     {
         return (
-            <Link to={buildPageUrl(node.parentTreePath)} className={`${className} enabled`} title="Up">
+            <Link to={buildPageUrl(parentPath)} className={`${className} enabled`} title="Up">
                 <UpSymbol />
             </Link>
         );

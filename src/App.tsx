@@ -1,19 +1,17 @@
 import { Outlet } from 'react-router-dom';
-import Overview from '@/components/overview/Overview';
 import { useEffect, useState } from 'react';
-import { Domain, DomainContext, createDummyNode, createNodeFromTreePath } from './domain';
+import { Domain, DomainContext, loadDomain } from './domain';
 import Sidebar from './components/Sidebar';
 
 
 function App()
 {
-  const [domain, setDomain] = useState<Domain>(new Domain(createDummyNode()));
+  const [domain, setDomain] = useState<Domain | null>(null);
 
   useEffect(
     () => {
       (async () => {
-        const root = await createNodeFromTreePath([]);
-        const domain = new Domain(root);
+        const domain = await loadDomain();
 
         setDomain(domain);
       })();
@@ -21,18 +19,21 @@ function App()
     []
   );
 
-  return (
-    <>
-      <DomainContext.Provider value={domain}>
-        <Sidebar root={domain.root} />
-        <div id="main-view-container">
-          <div id="main-view">
-            <Outlet />
+  if ( domain )
+  {
+    return (
+      <>
+        <DomainContext.Provider value={domain}>
+          <Sidebar root={domain.root} />
+          <div id="main-view-container">
+            <div id="main-view">
+              <Outlet />
+            </div>
           </div>
-        </div>
-      </DomainContext.Provider>
-    </>
-  );
+        </DomainContext.Provider>
+      </>
+    );
+  }
 }
 
 export default App;

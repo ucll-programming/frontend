@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { ExerciseRestData, ExplanationRestData, Judgement, MaterialRestData, SectionRestData, fetchNodeData } from "./rest";
+import { ExerciseRestData, ExplanationRestData, Judgement, MaterialRestData, SectionRestData, NodeRestData, isSection, isExplanation, isExercise, fetchOverview } from "./rest";
 
 
 export class TreePath
@@ -20,6 +20,11 @@ export class TreePath
     public get length(): number
     {
         return this.parts.length;
+    }
+
+    public get lastPart(): string
+    {
+        return this.parts[this.length - 1];
     }
 
     public isParentOf(treePath: TreePath): boolean
@@ -55,49 +60,18 @@ export class TreePath
 
 export abstract class ContentNode
 {
-    public constructor()
+    public constructor(public readonly name: string, public readonly treePath: TreePath)
     {
-        // NOP
+        this.predecessor = null;
+        this.successor = null;
+        this.parent = null;
     }
 
-    public get name(): string
-    {
-        return this.data.name;
-    }
+    public predecessor : ContentNode | null;
 
-    public get treePath(): TreePath
-    {
-        return new TreePath(this.data.tree_path);
-    }
+    public successor : ContentNode | null;
 
-    public get successorTreePath(): TreePath | null
-    {
-        return this.makeTreePath(this.data.successor_tree_path);
-    }
-
-    public get predecessorTreePath(): TreePath | null
-    {
-        return this.makeTreePath(this.data.predecessor_tree_path);
-    }
-
-    public get parentTreePath(): TreePath | null
-    {
-        return this.makeTreePath(this.data.parent_tree_path);
-    }
-
-    private makeTreePath(path: string[] | null) : TreePath | null
-    {
-        if ( path !== null )
-        {
-            return new TreePath(path);
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    protected abstract get data(): MaterialRestData;
+    public parent : ContentNode | null;
 
     public abstract isSection(): this is Section;
 
@@ -109,44 +83,9 @@ export abstract class ContentNode
 
 export class Section extends ContentNode
 {
-    private children: ContentNode[] | undefined;
-
-    private resolvers: ((children: ContentNode[]) => void)[];
-
-    public constructor(protected data: SectionRestData)
+    public constructor(name: string, treePath: TreePath, public readonly children: ContentNode[])
     {
-        super();
-
-        if ( data.type !== 'section' )
-        {
-            throw new Error('data should have type section')
-        }
-
-        this.children = undefined;
-        this.resolvers = [];
-        this.fetchData();
-    }
-
-    public async getChildren(): Promise<ContentNode[]>
-    {
-        if ( this.children === undefined )
-        {
-            return new Promise(resolve => this.resolvers.push(resolve));
-        }
-        else
-        {
-            return this.children;
-        }
-    }
-
-    private async fetchData(): Promise<void>
-    {
-        const promises = this.data.children.map(child => createNodeFromTreePath([...this.data.tree_path, child]));
-        const children = await Promise.all(promises);
-
-        this.children = children;
-        this.resolvers.forEach(resolver => resolver(children));
-        this.resolvers = [];
+        super(name, treePath);
     }
 
     public isExercise(): this is Exercise
@@ -164,25 +103,26 @@ export class Section extends ContentNode
         return true;
     }
 
-    public async lookup(part: string): Promise<ContentNode | undefined>
+    public findChild(part: string): ContentNode | undefined
     {
-        const children = await this.getChildren();
+        for ( const child of this.children )
+        {
+            if ( child.treePath.lastPart === part )
+            {
+                return child;
+            }
+        }
 
-        return children.find(c => c.treePath.parts[c.treePath.parts.length-1] === part);
+        return undefined;
     }
 }
 
 
 export class Exercise extends ContentNode
 {
-    public constructor(protected data: ExerciseRestData)
+    public constructor(name: string, treePath: TreePath, public readonly difficulty: number, private readonly markdownUrl: string, private readonly judgementUrl: string)
     {
-        super();
-
-        if ( data.type !== 'exercise' )
-        {
-            throw new Error('data should have type exercise')
-        }
+        super(name, treePath);
     }
 
     public isExercise(): this is Exercise
@@ -200,33 +140,26 @@ export class Exercise extends ContentNode
         return false;
     }
 
-    public get markdown(): string
+    public async markdown(): Promise<string>
     {
-        return this.data.markdown;
+        // TODO Cache?
+        const response = await fetch(this.markdownUrl);
+        return response.text();
     }
 
-    public get difficulty(): number
+    public async judgement(): Promise<Judgement>
     {
-        return this.data.difficulty;
-    }
-
-    public get judgement(): Judgement
-    {
-        return this.data.judgement;
+        // TODO
+        return "unknown";
     }
 }
 
 
 export class Explanation extends ContentNode
 {
-    public constructor(protected data: ExplanationRestData)
+    public constructor(name: string, treePath: TreePath, private readonly markdownUrl: string)
     {
-        super();
-
-        if ( data.type !== 'explanation' )
-        {
-            throw new Error('data should have type explanation')
-        }
+        super(name, treePath);
     }
 
     public isExercise(): this is Exercise
@@ -244,48 +177,116 @@ export class Explanation extends ContentNode
         return false;
     }
 
-    public get markdown(): string
+    public async markdown(): Promise<string>
     {
-        return this.data.markdown;
+        // TODO Cache?
+        const response = await fetch(this.markdownUrl);
+        return response.text();
     }
 }
 
 
-export async function createNodeFromTreePath(tree_path: string[]): Promise<ContentNode>
+function parseRestData(rawRoot: MaterialRestData): ContentNode
 {
-    const response = await fetchNodeData(tree_path);
-    const data = await response.json() as MaterialRestData;
+    const table = new Map<string, ContentNode>();
+    const [root, delayed] = parse(rawRoot);
+    delayed();
+    return root;
 
-    return createNodeFromData(data);
-}
 
+    function linkNode(node: ContentNode, predecessorPath: string[] | null, successorPath: string[] | null, parentPath: string[] | null)
+    {
+        if ( predecessorPath !== null )
+        {
+            const predecessorPathString = predecessorPath.join('/');
+            const predecessor = table.get(predecessorPathString);
 
-export function createDummyNode(): ContentNode
-{
-    const data: SectionRestData = {
-        type: 'section',
-        tree_path: [],
-        children: [],
-        name: 'DUMMY',
-        successor_tree_path: null,
-        predecessor_tree_path: null,
-        parent_tree_path: null,
+            if ( !predecessor )
+            {
+                console.error(`Unknown predecessor ${predecessorPathString}`);
+            }
+            else
+            {
+                node.predecessor = predecessor;
+            }
+        }
+
+        if ( successorPath !== null )
+        {
+            const successorPathString = successorPath.join('/');
+            const successor = table.get(successorPathString);
+
+            if ( !successor )
+            {
+                console.error(`Unknown successor ${successorPathString}`);
+            }
+            else
+            {
+                node.successor = successor;
+            }
+        }
+
+        if ( parentPath !== null )
+        {
+            const parentPathString = parentPath.join('/');
+            const parent = table.get(parentPathString);
+
+            if ( !parent )
+            {
+                console.error(`Unknown parent ${parentPathString}`);
+            }
+            else
+            {
+                node.parent = parent;
+            }
+        }
     }
 
-    return createNodeFromData(data);
-}
-
-
-export function createNodeFromData(data: MaterialRestData): ContentNode
-{
-    switch ( data.type )
+    function parse(node: MaterialRestData): [ContentNode, () => void]
     {
-        case "exercise":
-            return new Exercise(data);
-        case "explanation":
-            return new Explanation(data);
-        case "section":
-            return new Section(data);
+        if ( isSection(node) )
+        {
+            const childResults = node.children.map(child => parse(child));
+            const children = childResults.map(([child, _]) => child);
+            const childDelayedFunctions = childResults.map(([_, callback]) => callback);
+            const section = new Section(node.name, new TreePath(node.tree_path), children);
+            const callback = () => {
+                childDelayedFunctions.forEach(f => f());
+
+                linkNode(section, node.predecessor, node.successor, node.parent);
+            };
+
+            table.set(section.treePath.toString(), section);
+            return [section, callback];
+        }
+        else if ( isExercise(node) )
+        {
+            const exercise = new Exercise(
+                node.name,
+                new TreePath(node.tree_path),
+                node.difficulty,
+                node.markdown_url,
+                node.judgement_url,
+            );
+            const delayed = () => linkNode(exercise, node.predecessor, node.successor, node.parent);
+
+            return [exercise, delayed];
+        }
+        else if ( isExplanation(node) )
+        {
+            const explanation = new Explanation(
+                node.name,
+                new TreePath(node.tree_path),
+                node.markdown_url,
+            );
+            const delayed = () => linkNode(explanation, node.predecessor, node.successor, node.parent);
+
+            return [explanation, delayed];
+        }
+        else
+        {
+            throw new Error("Unknown node type");
+        }
     }
 }
 
@@ -297,7 +298,7 @@ export class Domain
         // NOP
     }
 
-    public async lookup(treePath: TreePath): Promise<ContentNode | undefined>
+    public lookup(treePath: TreePath): ContentNode | undefined
     {
         let current: ContentNode = this.root;
 
@@ -306,7 +307,7 @@ export class Domain
             if ( current.isSection() )
             {
                 const section = current;
-                const child = await section.lookup(part);
+                const child = section.findChild(part);
 
                 if ( child === undefined )
                 {
@@ -328,10 +329,27 @@ export class Domain
 }
 
 
-export const DomainContext = createContext<Domain>(new Domain(createDummyNode()));
-
-
-export function useDomain()
+export async function loadDomain(): Promise<Domain>
 {
-    return useContext(DomainContext);
+    const data = await fetchOverview();
+    const root = parseRestData(data);
+    return new Domain(root);
+}
+
+
+export const DomainContext = createContext<Domain | null>(null);
+
+
+export function useDomain(): Domain
+{
+    const domain = useContext(DomainContext);
+
+    if ( !domain )
+    {
+        throw new Error("Bug: should never happen");
+    }
+    else
+    {
+        return domain;
+    }
 }
