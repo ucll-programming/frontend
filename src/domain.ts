@@ -202,6 +202,7 @@ function parseRestData(rawRoot: MaterialRestData): ContentNode
 
             if ( !predecessor )
             {
+                console.error(table.keys());
                 console.error(`Unknown predecessor ${predecessorPathString}`);
             }
             else
@@ -269,6 +270,7 @@ function parseRestData(rawRoot: MaterialRestData): ContentNode
             );
             const delayed = () => linkNode(exercise, node.predecessor, node.successor, node.parent);
 
+            table.set(exercise.treePath.toString(), exercise);
             return [exercise, delayed];
         }
         else if ( isExplanation(node) )
@@ -280,6 +282,7 @@ function parseRestData(rawRoot: MaterialRestData): ContentNode
             );
             const delayed = () => linkNode(explanation, node.predecessor, node.successor, node.parent);
 
+            table.set(explanation.treePath.toString(), explanation);
             return [explanation, delayed];
         }
         else
