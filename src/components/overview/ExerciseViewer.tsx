@@ -16,7 +16,7 @@ function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
 
             if ( judgement === 'unknown' )
             {
-                setTimeout(func, 1);
+                setTimeout(func, 1000);
             }
         };
 
