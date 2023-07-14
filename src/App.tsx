@@ -2,6 +2,8 @@ import { Outlet } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Domain, DomainContext, loadDomain } from './domain';
 import Sidebar from './components/Sidebar';
+import ReactLoading from 'react-loading';
+import CenterBox from './components/CenterBox';
 
 
 function App()
@@ -21,6 +23,7 @@ function App()
         []
     );
 
+
     if ( domain )
     {
         return (
@@ -37,9 +40,9 @@ function App()
     else
     {
         return (
-            <p>
-                Loading...
-            </p>
+            <CenterBox>
+                <ReactLoading />
+            </CenterBox>
         );
     }
 }
