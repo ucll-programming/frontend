@@ -2,6 +2,8 @@ import { Section, ContentNode, Explanation, Exercise } from "@/domain";
 import { buildPageUrl } from "@/util";
 import { Link } from "react-router-dom";
 import NodeSymbolViewer from "./NodeSymbolViewer";
+import React from "react";
+import { Judgement } from "@/rest";
 
 
 
@@ -21,8 +23,24 @@ function SectionTile({ section } : { section: Section }): JSX.Element
 
 function ExerciseTile({ exercise } : { exercise: Exercise }): JSX.Element
 {
+    const [ judgement, setJudgement ] = React.useState<Judgement>('unknown');
+
+    React.useEffect(() => {
+        const func = async () => {
+            const judgement = await exercise.judgement();
+            setJudgement(judgement);
+
+            if ( judgement === 'unknown' )
+            {
+                setTimeout(func, 1);
+            }
+        };
+
+        func();
+    }, [ exercise ]);
+
     return (
-        <div className={`tile exercise ${exercise.judgement}`}>
+        <div className={`tile exercise ${judgement}`}>
             <div className="symbol">
                 <NodeSymbolViewer node={exercise} />
             </div>
