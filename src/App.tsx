@@ -2,8 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Domain, DomainContext, loadDomain } from './domain';
 import Sidebar from './components/Sidebar';
-import ReactLoading from 'react-loading';
-import CenterBox from './components/CenterBox';
+import LoadingAnimation from './components/LoadingAnimation';
 
 
 function App()
@@ -40,9 +39,7 @@ function App()
     else
     {
         return (
-            <CenterBox>
-                <ReactLoading />
-            </CenterBox>
+            <LoadingAnimation />
         );
     }
 }
