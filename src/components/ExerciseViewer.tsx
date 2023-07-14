@@ -1,12 +1,12 @@
 import { Exercise } from "@/domain";
 import { Markdown } from "@/components/Markdown";
 import React from "react";
+import LoadingAnimation from "./LoadingAnimation";
 
 
 function ExerciseViewer({ exercise } : { exercise: Exercise })
 {
-    // TODO Have load screen
-    const [markdown, setMarkdown] = React.useState<string>('');
+    const [markdown, setMarkdown] = React.useState<string | null>(null);
 
     React.useEffect(() => {
         const func = async () => {
@@ -14,15 +14,24 @@ function ExerciseViewer({ exercise } : { exercise: Exercise })
         };
 
         func();
-    }, [exercise]);
+    }, [ exercise ]);
 
-    return (
-        <div className="viewer exercise">
-            <Markdown>
-                {markdown}
-            </Markdown>
-        </div>
-    );
+    if ( markdown === null )
+    {
+        return (
+            <LoadingAnimation />
+        );
+    }
+    else
+    {
+        return (
+            <div className="viewer exercise">
+                <Markdown>
+                    {markdown}
+                </Markdown>
+            </div>
+        );
+    }
 }
 
 
