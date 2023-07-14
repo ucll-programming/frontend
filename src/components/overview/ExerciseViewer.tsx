@@ -11,7 +11,13 @@ function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
 
     React.useEffect(() => {
         const func = async () => {
-            setJudgement(await exercise.judgement());
+            const judgement = await exercise.judgement();
+            setJudgement(judgement);
+
+            if ( judgement === 'unknown' )
+            {
+                setTimeout(func, 1);
+            }
         };
 
         func();
