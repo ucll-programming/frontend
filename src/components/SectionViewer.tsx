@@ -1,6 +1,5 @@
 import { Section, ContentNode, Explanation, Exercise } from "@/domain";
 import { buildPageUrl } from "@/util";
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import NodeSymbolViewer from "./NodeSymbolViewer";
 
