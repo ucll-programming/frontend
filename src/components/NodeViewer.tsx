@@ -8,23 +8,13 @@ import SectionViewer from "./SectionViewer";
 
 function NodeViewer()
 {
-    const [node, setNode] = useState<ContentNode | undefined>(undefined);
     const path = useActiveTreePath();
     const domain = useDomain();
-
-    useEffect(() => {
-        const func = async () => {
-            const node = await domain.lookup(path);
-
-            setNode(node);
-        };
-
-        func();
-    }, [path, domain]);
+    const node = domain.lookup(path);
 
     if ( node === undefined )
     {
-        console.log('Error: could not find node in domain:', path);
+        console.error('Error: could not find node in domain:', path);
         return (
             <Fragment key="unknown">
                 <p>Error: {path.toString()} not found in domain</p>
