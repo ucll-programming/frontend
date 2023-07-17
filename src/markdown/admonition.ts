@@ -15,7 +15,6 @@ export const remarkAdmonition: Plugin = () => {
         'INFO',
         'TASK',
         'VIDEO',
-        'HINT',
         'QUESTION',
         'EXAMPLE',
         'IMPORTANT'
