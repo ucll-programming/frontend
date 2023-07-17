@@ -43,7 +43,9 @@ export const rehypeHint: Plugin = () => {
                             ]),
                         ]),
                         h('div', { className: 'card-back'}, [
-                            ...children,
+                            h('div', { className: 'card-back-contents' }, [
+                                ...children,
+                            ]),
                         ]),
                     ])
                 ]),
