@@ -77,7 +77,7 @@ export const rehypeAdmonition: Plugin = () => {
             case 'example':
                 return icons.createLightBulbIcon();
             case 'important':
-                return icons.createExclamationPointShieldIcon();
+                return icons.createStopSignIcon();
             default:
                 return h('BUG');
         }
