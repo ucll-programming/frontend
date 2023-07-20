@@ -88,3 +88,21 @@ export async function fetchJudgment(url: string): Promise<Judgment>
         return 'unknown';
     }
 }
+
+
+interface RejudgeRequestResponse
+{
+    status: 'ok' | 'fail';
+}
+
+export async function requestRejudgement(url: string): Promise<RejudgeRequestResponse>
+{
+    const request: RequestInit = {
+        method: 'POST',
+    };
+
+    const response = await fetch(url, request);
+    const data = await response.json() as RejudgeRequestResponse;
+
+    return data;
+}

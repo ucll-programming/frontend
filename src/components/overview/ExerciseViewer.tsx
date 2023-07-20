@@ -13,7 +13,7 @@ function SymbolContainer({ exercise }: { exercise: Exercise }): JSX.Element
     const [hovering, setHovering] = React.useState<boolean>(false);
 
     const innerElement = hovering ? (
-        <div onMouseDown={() => exercise.judge()}>
+        <div onMouseDown={() => exercise.rejudge()}>
             <RefreshIcon />
         </div>
     ) : (

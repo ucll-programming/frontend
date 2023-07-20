@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import { Observable } from "./observable";
-import { Judgment, MaterialRestData, fetchJudgment, fetchOverview, isExercise, isExplanation, isSection } from "./rest";
+import { Judgment, MaterialRestData, fetchJudgment, fetchOverview, isExercise, isExplanation, isSection, requestRejudgement } from "./rest";
 
 
 export class TreePath
@@ -175,6 +175,16 @@ export class Exercise extends LeafNode
         };
 
         performJudging();
+    }
+
+    public rejudge(): void
+    {
+        const performRejudging = async () => {
+            await requestRejudgement(this.judgmentUrl);
+            this.judge();
+        }
+
+        performRejudging();
     }
 }
 
