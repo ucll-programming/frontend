@@ -1,5 +1,5 @@
 import { useActiveTreePath } from "@/main";
-import { SyncIcon } from "@primer/octicons-react";
+import RefreshIcon from "./RefreshIcon";
 
 
 export default function ControlPanel(): JSX.Element
@@ -11,8 +11,7 @@ export default function ControlPanel(): JSX.Element
             <p>
                 {activeTreePath.toString()}
             </p>
-            <SyncIcon />
-
+            <RefreshIcon />
         </div>
     );
 }

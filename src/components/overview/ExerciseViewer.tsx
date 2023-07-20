@@ -5,9 +5,30 @@ import { Judgment } from '@/rest';
 import { useActiveTreePath } from '@/main';
 import { Link } from 'react-router-dom';
 import { buildPageUrl } from '@/util';
+import RefreshIcon from '../RefreshIcon';
 
 
-function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
+function SymbolContainer({ exercise }: { exercise: Exercise }): JSX.Element
+{
+    const [hovering, setHovering] = React.useState<boolean>(false);
+
+    const innerElement = hovering ? (
+        <div onMouseDown={() => exercise.judge()}>
+            <RefreshIcon />
+        </div>
+    ) : (
+        <NodeSymbolViewer node={exercise} />
+    );
+
+    return (
+        <div onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}>
+            {innerElement}
+        </div>
+    );
+}
+
+
+function ExerciseViewer({ exercise }: { exercise: Exercise }): JSX.Element
 {
     const activeTreePath = useActiveTreePath();
     const [ judgment, setJudgment ] = React.useState<Judgment>('unknown');
@@ -27,7 +48,7 @@ function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
                         {exercise.name}
                     </span>
                     <span className='overview-entry-header-symbol'>
-                        <NodeSymbolViewer node={exercise} />
+                        <SymbolContainer exercise={exercise} />
                     </span>
                 </Link>
             </h1>
