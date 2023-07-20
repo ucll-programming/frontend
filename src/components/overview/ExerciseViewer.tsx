@@ -1,12 +1,15 @@
 import { Exercise } from '@/domain';
 import NodeSymbolViewer from '@/components/NodeSymbolViewer';
-import LeafViewer from './LeafViewer';
 import React from 'react';
 import { Judgment } from '@/rest';
+import { useActiveTreePath } from '@/main';
+import { Link } from 'react-router-dom';
+import { buildPageUrl } from '@/util';
 
 
 function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
 {
+    const activeTreePath = useActiveTreePath();
     const [ judgment, setJudgment ] = React.useState<Judgment>('unknown');
 
     React.useEffect(() => {
@@ -17,12 +20,33 @@ function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
     const classNames = [ 'exercise', judgment ];
 
     return (
-        <LeafViewer
-            caption={exercise.name}
-            symbol={<NodeSymbolViewer node={exercise} />}
-            classNames={classNames}
-            treePath={exercise.treePath} />
+        <div className={determineClassName()}>
+            <h1 className='overview-entry-header'>
+                <Link to={buildPageUrl(exercise.treePath)}>
+                    <span className='overview-entry-header-label'>
+                        {exercise.name}
+                    </span>
+                    <span className='overview-entry-header-symbol'>
+                        <NodeSymbolViewer node={exercise} />
+                    </span>
+                </Link>
+            </h1>
+        </div>
     );
+
+
+    function determineClassName(): string
+    {
+        const isSelected = exercise.treePath.isEqualTo(activeTreePath);
+        const result = [ 'overview-entry', ...classNames ];
+
+        if ( isSelected )
+        {
+            result.push('selected');
+        }
+
+        return result.join(' ');
+    }
 }
 
 export default ExerciseViewer;
