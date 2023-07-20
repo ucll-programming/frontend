@@ -1,6 +1,6 @@
 import { Exercise } from '@/domain';
 import NodeSymbolViewer from '@/components/NodeSymbolViewer';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Judgment } from '@/rest';
 import { useActiveTreePath } from '@/main';
 import { Link } from 'react-router-dom';
@@ -11,9 +11,12 @@ import RefreshIcon from '../RefreshIcon';
 function SymbolContainer({ exercise }: { exercise: Exercise }): JSX.Element
 {
     const [hovering, setHovering] = React.useState<boolean>(false);
+    const onMouseEnter = useCallback(() => setHovering(true), []);
+    const onMouseLeave = useCallback(() => setHovering(false), []);
+    const onMouseDown = useCallback(() => exercise.rejudge(), [exercise]);
 
     const innerElement = hovering ? (
-        <div onMouseDown={() => exercise.rejudge()}>
+        <div >
             <RefreshIcon />
         </div>
     ) : (
@@ -21,7 +24,7 @@ function SymbolContainer({ exercise }: { exercise: Exercise }): JSX.Element
     );
 
     return (
-        <div onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}>
+        <div className='symbol-container' onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onMouseDown={onMouseDown}>
             {innerElement}
         </div>
     );
