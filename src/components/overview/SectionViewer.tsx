@@ -1,4 +1,4 @@
-import { ContentNode, Section } from '@/domain';
+import { Section, TreePath } from '@/domain';
 import { useActiveTreePath } from '@/main';
 import { Link } from 'react-router-dom';
 import { buildPageUrl } from '@/util';
@@ -13,7 +13,7 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
     return (
         <div className={determineClassName()}>
             <h1 className='overview-entry-header'>
-                <Link to={buildPageUrl(section.treePath)}>
+                <Link to={buildPageUrl(determineLinkedTreePath())}>
                     {section.name}
                 </Link>
             </h1>
@@ -24,14 +24,33 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
     );
 
 
+    function determineLinkedTreePath(): TreePath
+    {
+        const selfTreePath = section.treePath;
+        const parent = section.parent;
+
+        if ( isSelected() )
+        {
+            if ( parent )
+            {
+                return parent.treePath;
+            }
+            else
+            {
+                return selfTreePath;
+            }
+        }
+        else
+        {
+            return selfTreePath;
+        }
+    }
+
     function determineClassName(): string
     {
-        const isSelected = section.treePath.isEqualTo(activeTreePath);
-        const isExpanded = section.treePath.isParentOf(activeTreePath);
-
         const result = ['overview-entry', 'section'];
 
-        if ( isExpanded )
+        if ( isExpanded() )
         {
             result.push('expanded');
         }
@@ -40,12 +59,22 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
             result.push('collapsed');
         }
 
-        if ( isSelected )
+        if ( isSelected() )
         {
             result.push('selected');
         }
 
         return result.join(' ');
+    }
+
+    function isExpanded(): boolean
+    {
+        return section.treePath.isParentOf(activeTreePath);
+    }
+
+    function isSelected(): boolean
+    {
+        return section.treePath.isEqualTo(activeTreePath);
     }
 }
 
