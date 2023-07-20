@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
-import { ExerciseRestData, ExplanationRestData, Judgment, MaterialRestData, SectionRestData, NodeRestData, isSection, isExplanation, isExercise, fetchOverview, fetchJudgment as fetchJudgment } from "./rest";
 import { Observable } from "./observable";
+import { Judgment, MaterialRestData, fetchJudgment, fetchOverview, isExercise, isExplanation, isSection } from "./rest";
 
 
 export class TreePath
