@@ -10,17 +10,8 @@ function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
     const [ judgment, setJudgment ] = React.useState<Judgment>('unknown');
 
     React.useEffect(() => {
-        const func = async () => {
-            const judgment = await exercise.judgment();
-            setJudgment(judgment);
-
-            if ( judgment === 'unknown' )
-            {
-                setTimeout(func, 1000);
-            }
-        };
-
-        func();
+        setJudgment(exercise.judgment.value);
+        return exercise.judgment.observe(() => setJudgment(exercise.judgment.value));
     }, [exercise]);
 
     const classNames = [ 'exercise', judgment ];

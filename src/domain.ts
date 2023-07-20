@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
 import { ExerciseRestData, ExplanationRestData, Judgment, MaterialRestData, SectionRestData, NodeRestData, isSection, isExplanation, isExercise, fetchOverview, fetchJudgment as fetchJudgment } from "./rest";
+import { Observable } from "./observable";
 
 
 export class TreePath
@@ -136,9 +137,14 @@ abstract class LeafNode extends ContentNode
 
 export class Exercise extends LeafNode
 {
+    public judgment: Observable<Judgment>;
+
     public constructor(name: string, treePath: TreePath, public readonly difficulty: number, markdownUrl: string, private readonly judgmentUrl: string)
     {
         super(name, treePath, markdownUrl);
+
+        this.judgment = new Observable<Judgment>("unknown");
+        this.judge();
     }
 
     public isExercise(): this is Exercise
@@ -156,9 +162,19 @@ export class Exercise extends LeafNode
         return false;
     }
 
-    public async judgment(): Promise<Judgment>
+    public judge(): void
     {
-        return fetchJudgment(this.judgmentUrl);
+        const performJudging = async () => {
+            const judgment = await fetchJudgment(this.judgmentUrl);
+            this.judgment.value = judgment;
+
+            if ( judgment == 'unknown' )
+            {
+                setTimeout(() => performJudging(), 1000);
+            }
+        };
+
+        performJudging();
     }
 }
 
