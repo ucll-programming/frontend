@@ -118,11 +118,27 @@ export class Section extends ContentNode
 }
 
 
-export class Exercise extends ContentNode
+abstract class LeafNode extends ContentNode
 {
-    public constructor(name: string, treePath: TreePath, public readonly difficulty: number, private readonly markdownUrl: string, private readonly judgmentUrl: string)
+    public constructor(name: string, treePath: TreePath, protected readonly markdownUrl: string)
     {
         super(name, treePath);
+    }
+
+    public async markdown(): Promise<string>
+    {
+        // TODO Cache?
+        const response = await fetch(this.markdownUrl);
+        return response.text();
+    }
+}
+
+
+export class Exercise extends LeafNode
+{
+    public constructor(name: string, treePath: TreePath, public readonly difficulty: number, markdownUrl: string, private readonly judgmentUrl: string)
+    {
+        super(name, treePath, markdownUrl);
     }
 
     public isExercise(): this is Exercise
@@ -138,13 +154,6 @@ export class Exercise extends ContentNode
     public isSection(): this is Section
     {
         return false;
-    }
-
-    public async markdown(): Promise<string>
-    {
-        // TODO Cache?
-        const response = await fetch(this.markdownUrl);
-        return response.text();
     }
 
     public async judgment(): Promise<Judgment>
@@ -154,11 +163,11 @@ export class Exercise extends ContentNode
 }
 
 
-export class Explanation extends ContentNode
+export class Explanation extends LeafNode
 {
-    public constructor(name: string, treePath: TreePath, private readonly markdownUrl: string)
+    public constructor(name: string, treePath: TreePath, markdownUrl: string)
     {
-        super(name, treePath);
+        super(name, treePath, markdownUrl);
     }
 
     public isExercise(): this is Exercise
@@ -174,13 +183,6 @@ export class Explanation extends ContentNode
     public isSection(): this is Section
     {
         return false;
-    }
-
-    public async markdown(): Promise<string>
-    {
-        // TODO Cache?
-        const response = await fetch(this.markdownUrl);
-        return response.text();
     }
 }
 
