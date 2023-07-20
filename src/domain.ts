@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { ExerciseRestData, ExplanationRestData, Judgement, MaterialRestData, SectionRestData, NodeRestData, isSection, isExplanation, isExercise, fetchOverview, fetchJudgement } from "./rest";
+import { ExerciseRestData, ExplanationRestData, Judgment, MaterialRestData, SectionRestData, NodeRestData, isSection, isExplanation, isExercise, fetchOverview, fetchJudgment as fetchJudgment } from "./rest";
 
 
 export class TreePath
@@ -120,7 +120,7 @@ export class Section extends ContentNode
 
 export class Exercise extends ContentNode
 {
-    public constructor(name: string, treePath: TreePath, public readonly difficulty: number, private readonly markdownUrl: string, private readonly judgementUrl: string)
+    public constructor(name: string, treePath: TreePath, public readonly difficulty: number, private readonly markdownUrl: string, private readonly judgmentUrl: string)
     {
         super(name, treePath);
     }
@@ -147,9 +147,9 @@ export class Exercise extends ContentNode
         return response.text();
     }
 
-    public async judgement(): Promise<Judgement>
+    public async judgment(): Promise<Judgment>
     {
-        return fetchJudgement(this.judgementUrl);
+        return fetchJudgment(this.judgmentUrl);
     }
 }
 
@@ -266,7 +266,7 @@ function parseRestData(rawRoot: MaterialRestData): ContentNode
                 new TreePath(node.tree_path),
                 node.difficulty,
                 node.markdown_url,
-                node.judgement_url,
+                node.judgment_url,
             );
             const delayed = () => linkNode(exercise, node.predecessor, node.successor, node.parent);
 

@@ -2,19 +2,19 @@ import { Exercise } from '@/domain';
 import NodeSymbolViewer from '@/components/NodeSymbolViewer';
 import LeafViewer from './LeafViewer';
 import React from 'react';
-import { Judgement } from '@/rest';
+import { Judgment } from '@/rest';
 
 
 function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
 {
-    const [ judgement, setJudgement ] = React.useState<Judgement>('unknown');
+    const [ judgment, setJudgment ] = React.useState<Judgment>('unknown');
 
     React.useEffect(() => {
         const func = async () => {
-            const judgement = await exercise.judgement();
-            setJudgement(judgement);
+            const judgment = await exercise.judgment();
+            setJudgment(judgment);
 
-            if ( judgement === 'unknown' )
+            if ( judgment === 'unknown' )
             {
                 setTimeout(func, 1000);
             }
@@ -23,7 +23,7 @@ function ExerciseViewer({ exercise } : { exercise: Exercise }): JSX.Element
         func();
     }, [exercise]);
 
-    const classNames = [ 'exercise', judgement ];
+    const classNames = [ 'exercise', judgment ];
 
     return (
         <LeafViewer

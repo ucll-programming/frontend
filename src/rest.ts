@@ -1,4 +1,4 @@
-export type Judgement = 'pass' | 'fail' | 'unknown';
+export type Judgment = 'pass' | 'fail' | 'unknown';
 
 export interface NodeRestData
 {
@@ -31,7 +31,7 @@ export interface ExerciseRestData extends LeafRestData
     type: 'exercise',
     markdown_url: string,
     difficulty: number,
-    judgement_url: string,
+    judgment_url: string,
 }
 
 export type MaterialRestData = SectionRestData | ExplanationRestData | ExerciseRestData;
@@ -60,27 +60,27 @@ export async function fetchOverview(): Promise<MaterialRestData>
     return data;
 }
 
-interface JudgementSuccess
+interface JudgmentSuccess
 {
     status: 'ok',
-    judgement: Judgement,
+    judgment: Judgment,
 }
 
-interface JudgementFailure
+interface JudgmentFailure
 {
     status: 'fail',
 }
 
-type JudgementResponse = JudgementSuccess | JudgementFailure;
+type JudgmentResponse = JudgmentSuccess | JudgmentFailure;
 
-export async function fetchJudgement(url: string): Promise<Judgement>
+export async function fetchJudgment(url: string): Promise<Judgment>
 {
     const response = await fetch(url);
-    const data = await response.json() as JudgementResponse;
+    const data = await response.json() as JudgmentResponse;
 
     if ( data.status === 'ok' )
     {
-        return data.judgement;
+        return data.judgment;
     }
     else
     {
