@@ -23,6 +23,8 @@ export class Observable<T>
 
     public observe(observer: () => void): () => void
     {
+        this.pruneInactive();
+
         const wrapper = new ObserverWrapper(observer);
         this.observers.push(wrapper);
 
@@ -42,17 +44,16 @@ export class Observable<T>
 
     private notifyObservers(): void
     {
-        const newObserverList = [];
+        this.pruneInactive();
 
         for ( const observer of this.observers.slice() )
         {
-            if ( observer.active )
-            {
-                newObserverList.push(observer);
-                observer.callback();
-            }
+            observer.callback();
         }
+    }
 
-        this.observers = newObserverList;
+    private pruneInactive(): void
+    {
+        this.observers = this.observers.filter(observer => observer.active);
     }
 }
