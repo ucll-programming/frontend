@@ -14,8 +14,6 @@ export const remarkHint: Plugin = () => {
         visit(tree, 'containerDirective', (node: ContainerDirective) => {
             if (node.name === 'HINT')
             {
-                console.log("Found hint!");
-
                 const data = node.data || (node.data = {});
                 const tagName = 'div';
 
