@@ -47,10 +47,10 @@ function ExerciseViewer({ exercise }: { exercise: Exercise }): JSX.Element
                     <span className='overview-entry-header-label'>
                         {exercise.name}
                     </span>
-                    <span className='overview-entry-header-symbol'>
-                        <SymbolContainer exercise={exercise} />
-                    </span>
                 </Link>
+                <span className='overview-entry-header-symbol'>
+                    <SymbolContainer exercise={exercise} />
+                </span>
             </h1>
         </div>
     );

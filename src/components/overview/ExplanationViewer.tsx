@@ -16,10 +16,10 @@ function ExplanationViewer({ explanation }: { explanation: Explanation }): JSX.E
                     <span className='overview-entry-header-label'>
                         {explanation.name}
                     </span>
-                    <span className='overview-entry-header-symbol'>
-                    <NodeSymbolViewer node={explanation} />
-                    </span>
                 </Link>
+                <span className='overview-entry-header-symbol'>
+                    <NodeSymbolViewer node={explanation} />
+                </span>
             </h1>
         </div>
     );
