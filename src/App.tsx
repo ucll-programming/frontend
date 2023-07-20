@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Domain, DomainContext, loadDomain } from './domain';
 import Sidebar from './components/Sidebar';
 import LoadingAnimation from './components/LoadingAnimation';
+import ControlPanel from './components/ControlPanel';
 
 
 function App()
@@ -22,7 +23,6 @@ function App()
         []
     );
 
-
     if ( domain )
     {
         return (
@@ -33,6 +33,7 @@ function App()
                         <Outlet />
                     </div>
                 </div>
+                <ControlPanel />
             </DomainContext.Provider>
         );
     }
