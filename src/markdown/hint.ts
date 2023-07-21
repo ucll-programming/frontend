@@ -18,7 +18,7 @@ export const remarkHint: Plugin = () => {
                 const tagName = 'div';
 
                 data.hName = tagName;
-                data.hProperties = {className: ['hint']};
+                data.hProperties = { className: ['hint'], caption: node.attributes?.caption };
             }
         });
     };
@@ -30,6 +30,9 @@ export const rehypeHint: Plugin = () => {
         visit(tree, isHint, (node: Node) => {
             const element = node as Element;
             const children = element.children;
+            const caption = (element.properties?.caption || 'Hint') as string;
+
+            console.log(node);
 
             element.children = [
                 h('div', { className: 'card', tabindex: '0' }, [
@@ -37,7 +40,7 @@ export const rehypeHint: Plugin = () => {
                         h('div', { className: 'card-front'}, [
                             h('h1', [
                                 h('span', { className: 'hint-symbol' }, [ icons.createHintIcon() ]),
-                                h('span', { className: 'hint-caption' }, [ "Hint" ]),
+                                h('span', { className: 'hint-caption' }, [ caption ]),
                             ]),
                         ]),
                         h('div', { className: 'card-back'}, [
