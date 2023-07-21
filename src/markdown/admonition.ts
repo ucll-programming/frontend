@@ -52,7 +52,7 @@ export const rehypeAdmonition: Plugin = () => {
                         h('span', { className: 'admonition-caption' }, [ capitalize(category) ]),
                     ]),
                 ]),
-                ...children,
+                h('div', { className: 'admonition-body' }, children),
             ]
         });
     };
