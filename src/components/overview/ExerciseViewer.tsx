@@ -10,22 +10,16 @@ import RefreshIcon from '../RefreshIcon';
 
 function SymbolContainer({ exercise }: { exercise: Exercise }): JSX.Element
 {
-    const [hovering, setHovering] = React.useState<boolean>(false);
-    const onMouseEnter = useCallback(() => setHovering(true), []);
-    const onMouseLeave = useCallback(() => setHovering(false), []);
     const onMouseDown = useCallback(() => exercise.rejudge(), [exercise]);
 
-    const innerElement = hovering ? (
-        <div >
-            <RefreshIcon />
-        </div>
-    ) : (
-        <NodeSymbolViewer node={exercise} />
-    );
-
     return (
-        <div className='symbol-container' onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onMouseDown={onMouseDown}>
-            {innerElement}
+        <div className='symbol-container' onMouseDown={onMouseDown}>
+            <div className='difficulty'>
+                <NodeSymbolViewer node={exercise} />
+            </div>
+            <div className='refresh'>
+                <RefreshIcon />
+            </div>
         </div>
     );
 }
