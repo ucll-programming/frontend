@@ -16,6 +16,7 @@ function App()
             ( async () =>
             {
                 const domain = await loadDomain();
+                domain.root.judge();
 
                 setDomain( domain );
             } )();
@@ -26,15 +27,17 @@ function App()
     if ( domain )
     {
         return (
-            <DomainContext.Provider value={domain}>
-                <Sidebar root={domain.root} />
-                <div id="main-view-container">
-                    <div id="main-view">
-                        <Outlet />
+            <div onKeyDown={() => { console.log('key pressed')}}>
+                <DomainContext.Provider value={domain}>
+                    <Sidebar root={domain.root} />
+                    <div id="main-view-container">
+                        <div id="main-view">
+                            <Outlet />
+                        </div>
                     </div>
-                </div>
-                <ControlPanel />
-            </DomainContext.Provider>
+                    <ControlPanel />
+                </DomainContext.Provider>
+            </div>
         );
     }
     else

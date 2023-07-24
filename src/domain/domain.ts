@@ -68,7 +68,7 @@ function parseRestData(rawRoot: MaterialRestData): ContentNode
             const childResults = node.children.map(child => parse(child));
             const children = childResults.map(([child, _]) => child);
             const childDelayedFunctions = childResults.map(([_, callback]) => callback);
-            const section = new Section(node.name, new TreePath(node.tree_path), children);
+            const section = new Section(node.name, new TreePath(node.tree_path), children, node.judgment_url);
             const callback = () => {
                 childDelayedFunctions.forEach(f => f());
 

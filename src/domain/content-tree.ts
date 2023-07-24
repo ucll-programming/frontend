@@ -1,7 +1,6 @@
-import { createContext, useContext } from "react";
-import { Observable } from "@/observable";
-import { Judgment, MaterialRestData, fetchJudgment, requestRejudgement } from "@/rest";
 import { TreePath } from '@/domain';
+import { Observable } from "@/observable";
+import { Judgment, fetchJudgment, requestRejudgement } from "@/rest";
 
 
 export abstract class ContentNode
@@ -24,32 +23,36 @@ export abstract class ContentNode
     public abstract isExercise(): this is Exercise;
 
     public abstract isExplanation(): this is Explanation;
+
+    public abstract judge(): void;
+
+    public abstract updateJudgment(judgments: Record<string, Judgment>): void;
 }
 
 
 export class Section extends ContentNode
 {
-    public constructor(name: string, treePath: TreePath, public readonly children: ContentNode[])
+    public constructor(name: string, treePath: TreePath, public readonly children: ContentNode[], public readonly judgmentUrl: string)
     {
         super(name, treePath);
     }
 
-    public isExercise(): this is Exercise
+    public override isExercise(): this is Exercise
     {
         return false;
     }
 
-    public isExplanation(): this is Explanation
+    public override isExplanation(): this is Explanation
     {
         return false;
     }
 
-    public isSection(): this is Section
+    public override isSection(): this is Section
     {
         return true;
     }
 
-    public findChild(part: string): ContentNode | undefined
+    public findChild(part: string): ContentNode
     {
         for ( const child of this.children )
         {
@@ -59,7 +62,50 @@ export class Section extends ContentNode
             }
         }
 
-        return undefined;
+        throw new Error(`Could not find child ${part}`);
+    }
+
+    public descend(tree_path: TreePath): ContentNode
+    {
+        if ( !this.treePath.isParentOf(tree_path) )
+        {
+            throw new Error('Cannot descend to given tree path');
+        }
+
+        const parts = tree_path.parts.slice(this.treePath.parts.length);
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        let current: ContentNode = this;
+
+        for ( const part of parts )
+        {
+            if ( !current.isSection() )
+            {
+                throw new Error('Cannot descend to given tree path');
+            }
+
+            current = current.findChild(part);
+        }
+
+        return current;
+    }
+
+    public override judge(): void
+    {
+        const performJudging = async () => {
+            const judgments = await fetchJudgment(this.judgmentUrl);
+
+            this.updateJudgment(judgments);
+        };
+
+        performJudging();
+    }
+
+    public override updateJudgment( judgments: Record<string, Judgment> ): void
+    {
+        for ( const child of this.children )
+        {
+            child.updateJudgment(judgments);
+        }
     }
 }
 
@@ -89,20 +135,19 @@ export class Exercise extends LeafNode
         super(name, treePath, markdownUrl);
 
         this.judgment = new Observable<Judgment>("unknown");
-        this.judge();
     }
 
-    public isExercise(): this is Exercise
+    public override isExercise(): this is Exercise
     {
         return true;
     }
 
-    public isExplanation(): this is Explanation
+    public override isExplanation(): this is Explanation
     {
         return false;
     }
 
-    public isSection(): this is Section
+    public override isSection(): this is Section
     {
         return false;
     }
@@ -141,6 +186,16 @@ export class Exercise extends LeafNode
 
         performRejudging();
     }
+
+    public override updateJudgment( judgments: Record<string, Judgment> ): void
+    {
+        const treePathString = this.treePath.toString();
+
+        if ( treePathString in judgments )
+        {
+            this.judgment.value = judgments[treePathString];
+        }
+    }
 }
 
 
@@ -151,18 +206,28 @@ export class Explanation extends LeafNode
         super(name, treePath, markdownUrl);
     }
 
-    public isExercise(): this is Exercise
+    public override isExercise(): this is Exercise
     {
         return false;
     }
 
-    public isExplanation(): this is Explanation
+    public override isExplanation(): this is Explanation
     {
         return true;
     }
 
-    public isSection(): this is Section
+    public override isSection(): this is Section
     {
         return false;
+    }
+
+    public override judge(): void
+    {
+        // NOP
+    }
+
+    public override updateJudgment( judgments: Record<string, Judgment> ): void
+    {
+        // NOP
     }
 }

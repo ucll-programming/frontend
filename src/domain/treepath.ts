@@ -8,6 +8,13 @@ export class TreePath
         }
     }
 
+    public static parse(s: string): TreePath
+    {
+        const parts = s.split('/');
+
+        return new TreePath(parts);
+    }
+
     public add(part: string): TreePath
     {
         return new TreePath([...this.parts, part]);
