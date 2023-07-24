@@ -65,30 +65,6 @@ export class Section extends ContentNode
         throw new Error(`Could not find child ${part}`);
     }
 
-    public descend(tree_path: TreePath): ContentNode
-    {
-        if ( !this.treePath.isParentOf(tree_path) )
-        {
-            throw new Error('Cannot descend to given tree path');
-        }
-
-        const parts = tree_path.parts.slice(this.treePath.parts.length);
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        let current: ContentNode = this;
-
-        for ( const part of parts )
-        {
-            if ( !current.isSection() )
-            {
-                throw new Error('Cannot descend to given tree path');
-            }
-
-            current = current.findChild(part);
-        }
-
-        return current;
-    }
-
     public override judge(): void
     {
         const performJudging = async () => {
