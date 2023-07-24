@@ -75,16 +75,6 @@ export class Section extends ContentNode
         }
 
         return this.childMap[part];
-
-        // for ( const child of this.children )
-        // {
-        //     if ( child.treePath.lastPart === part )
-        //     {
-        //         return child;
-        //     }
-        // }
-
-        // throw new Error(`Could not find child ${part}`);
     }
 
     public override judge(): void
