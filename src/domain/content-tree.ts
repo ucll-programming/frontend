@@ -32,9 +32,24 @@ export abstract class ContentNode
 
 export class Section extends ContentNode
 {
-    public constructor(name: string, treePath: TreePath, public readonly children: ContentNode[], public readonly judgmentUrl: string)
+    private readonly childMap: Record<string, ContentNode>;
+
+    public constructor(name: string, treePath: TreePath, children: ContentNode[], public readonly judgmentUrl: string)
     {
         super(name, treePath);
+
+        this.childMap = {};
+        for ( const child of children )
+        {
+            if ( !this.treePath.isParentOf(child.treePath) )
+            {
+                throw new Error(`Child's tree path is not extension of parent's tree path`);
+            }
+
+            const extraPart = child.treePath.parts[this.treePath.length];
+
+            this.childMap[extraPart] = child;
+        }
     }
 
     public override isExercise(): this is Exercise
@@ -54,15 +69,22 @@ export class Section extends ContentNode
 
     public findChild(part: string): ContentNode
     {
-        for ( const child of this.children )
+        if ( !(part in this.childMap) )
         {
-            if ( child.treePath.lastPart === part )
-            {
-                return child;
-            }
+            throw new Error(`Could not find child ${part}`);
         }
 
-        throw new Error(`Could not find child ${part}`);
+        return this.childMap[part];
+
+        // for ( const child of this.children )
+        // {
+        //     if ( child.treePath.lastPart === part )
+        //     {
+        //         return child;
+        //     }
+        // }
+
+        // throw new Error(`Could not find child ${part}`);
     }
 
     public override judge(): void
@@ -74,6 +96,11 @@ export class Section extends ContentNode
         };
 
         performJudging();
+    }
+
+    public get children(): ContentNode[]
+    {
+        return Object.values(this.childMap);
     }
 
     public override updateJudgment( judgments: Record<string, Judgment> ): void
