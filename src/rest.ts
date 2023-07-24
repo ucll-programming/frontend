@@ -13,6 +13,7 @@ export interface SectionRestData extends NodeRestData
 {
     type: 'section',
     children: MaterialRestData[],
+    judgment_url: string,
 }
 
 export interface LeafRestData extends NodeRestData
@@ -63,7 +64,7 @@ export async function fetchOverview(): Promise<MaterialRestData>
 interface JudgmentSuccess
 {
     status: 'ok',
-    judgment: Judgment,
+    judgments: Record<string, Judgment>,
 }
 
 interface JudgmentFailure
@@ -73,19 +74,24 @@ interface JudgmentFailure
 
 type JudgmentResponse = JudgmentSuccess | JudgmentFailure;
 
-export async function fetchJudgment(url: string): Promise<Judgment>
+export async function fetchJudgment(url: string): Promise<Record<string, Judgment>>
 {
     const response = await fetch(url);
     const data = await response.json() as JudgmentResponse;
 
     if ( data.status === 'ok' )
     {
-        return data.judgment;
+        if ( !Object.values(data.judgments).every(judgment => ['pass', 'fail', 'unknown'].includes(judgment)) )
+        {
+            console.error(`Invalid judgment`, data.judgments);
+        }
+
+        return data.judgments;
     }
     else
     {
-        console.error(`Failed to fetch ${url}`);
-        return 'unknown';
+        console.error(`Failed to fetch judgment at ${url}`);
+        throw new Error("Invalid url");
     }
 }
 

@@ -110,12 +110,22 @@ export class Exercise extends LeafNode
     public judge(): void
     {
         const performJudging = async () => {
-            const judgment = await fetchJudgment(this.judgmentUrl);
-            this.judgment.value = judgment;
+            const judgments = await fetchJudgment(this.judgmentUrl);
+            const treePathString = this.treePath.toString();
 
-            if ( judgment == 'unknown' )
+            if ( treePathString in judgments )
             {
-                setTimeout(() => performJudging(), 1000);
+                const judgment = judgments[treePathString];
+                this.judgment.value = judgment;
+
+                if ( judgment === 'unknown' )
+                {
+                    setTimeout(() => performJudging(), 1000);
+                }
+            }
+            else
+            {
+                console.error(`Unexpected error: ${treePathString} not found in judgments object`, judgments);
             }
         };
 
