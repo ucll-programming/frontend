@@ -24,6 +24,7 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
     );
 
 
+    // Determines what happens when clicked on
     function determineLinkedTreePath(): TreePath
     {
         const selfTreePath = section.treePath;
@@ -63,6 +64,10 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
         {
             result.push('selected');
         }
+        else if ( isChildSelected() )
+        {
+            result.push('child-selected');
+        }
 
         return result.join(' ');
     }
@@ -75,6 +80,11 @@ function SectionViewer({ section }: { section: Section }): JSX.Element
     function isSelected(): boolean
     {
         return section.treePath.isEqualTo(activeTreePath);
+    }
+
+    function isChildSelected(): boolean
+    {
+        return section.treePath.isParentOf(activeTreePath) && !section.treePath.isEqualTo(activeTreePath);
     }
 }
 
