@@ -27,7 +27,7 @@ function App()
     if ( domain )
     {
         return (
-            <div onKeyDown={() => { console.log('key pressed')}}>
+            <div onKeyDown={() => { console.log('key pressed') }}>
                 <DomainContext.Provider value={domain}>
                     <Sidebar root={domain.root} />
                     <div id="main-view-container">
