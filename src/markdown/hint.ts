@@ -32,8 +32,6 @@ export const rehypeHint: Plugin = () => {
             const children = element.children;
             const caption = (element.properties?.caption || 'Hint') as string;
 
-            console.log(node);
-
             element.children = [
                 h('div', { className: 'card', tabindex: '0' }, [
                     h('div', { className: 'card-faces' }, [
