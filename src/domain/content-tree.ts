@@ -158,7 +158,7 @@ export class Exercise extends LeafNode
 
                 if ( judgment === 'unknown' )
                 {
-                    setTimeout(() => performJudging(), 1000);
+                    this.delayedJudge();
                 }
             }
             else
@@ -168,6 +168,11 @@ export class Exercise extends LeafNode
         };
 
         performJudging();
+    }
+
+    private delayedJudge()
+    {
+        setTimeout(() => this.judge(), 1000);
     }
 
     public rejudge(): void
@@ -186,7 +191,13 @@ export class Exercise extends LeafNode
 
         if ( treePathString in judgments )
         {
-            this.judgment.value = judgments[treePathString];
+            const judgment = judgments[treePathString];
+            this.judgment.value = judgment;
+
+            if ( judgment === 'unknown' )
+            {
+                this.delayedJudge();
+            }
         }
     }
 }
