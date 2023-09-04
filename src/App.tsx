@@ -26,16 +26,14 @@ function App()
     if ( domain )
     {
         return (
-            <div onKeyDown={() => { console.log('key pressed') }}>
-                <DomainContext.Provider value={domain}>
-                    <Sidebar root={domain.root} />
-                    <div id="main-view-container">
-                        <div id="main-view">
-                            <Outlet />
-                        </div>
+            <DomainContext.Provider value={domain}>
+                <Sidebar root={domain.root} />
+                <div id="main-view-container">
+                    <div id="main-view">
+                        <Outlet />
                     </div>
-                </DomainContext.Provider>
-            </div>
+                </div>
+            </DomainContext.Provider>
         );
     }
     else
