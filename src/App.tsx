@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Domain, DomainContext, loadDomain } from './domain';
 import Sidebar from './components/Sidebar';
 import LoadingAnimation from './components/LoadingAnimation';
-import ControlPanel from './components/ControlPanel';
 
 
 function App()
