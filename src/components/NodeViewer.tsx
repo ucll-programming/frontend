@@ -1,6 +1,6 @@
-import { Fragment, useEffect, useState } from "react";
-import { useDomain, ContentNode } from "@/domain";
+import { useDomain } from "@/domain";
 import { useActiveTreePath } from "@/main";
+import { Fragment } from "react";
 import ExerciseViewer from "./ExerciseViewer";
 import ExplanationViewer from "./ExplanationViewer";
 import SectionViewer from "./SectionViewer";
