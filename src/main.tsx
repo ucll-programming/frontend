@@ -1,8 +1,9 @@
+import NodeViewer from '@/components/NodeViewer';
+import Welcome from '@/components/Welcome';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter, useParams } from 'react-router-dom';
 import App from './App';
-import NodeViewer from '@/components/NodeViewer';
 import { TreePath } from './domain';
 
 
@@ -11,6 +12,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
+      {
+        path: '',
+        element: <Welcome />
+      },
       {
         path: "nodes/*",
         element: <NodeViewer />,
